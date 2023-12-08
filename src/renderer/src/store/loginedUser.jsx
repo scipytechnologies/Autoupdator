@@ -6,7 +6,7 @@ const initialState = {
     role:'owner',
     firstName:'',
     lastName:'',
-    pumpID:'',
+    PumpId:'',
     email:''   
   }
 
@@ -25,10 +25,11 @@ const initialState = {
         state.role = "owner"
        },
        setUserProfile :(state,action) =>{
-        const {firstName,lastName,pumpID,email} = action.payload;
+        const {firstName,lastName,PumpId,email} = action.payload;
+        console.log(action.payload);
         state.firstName = firstName;
         state.lastName = lastName;
-        state.pumpID = pumpID;
+        state.PumpId = PumpId;
         state.email = email
        } 
         

@@ -59,7 +59,7 @@ export default function App() {
       const newUser = {
         firstName: userData.data.firstName,
         lastName: userData.data.LastName,
-        // pumpID: userData.data.pumpid,
+        PumpId: userData.data.PumpId,
         email: userData.data.email
       }
       dispatch(setUserProfile(newUser))

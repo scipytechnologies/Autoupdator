@@ -7,11 +7,14 @@ import { dp3 } from '../../data/DashboardData'
 import ReactApexChart from 'react-apexcharts'
 import { useSelector, useDispatch } from 'react-redux'
 import GaugeChart from 'react-gauge-chart'
+import mainservice from '../../Services/mainservice'
 
 export default function Tank() {
   const user = useSelector((state) => state.loginedUser)
-  console.log(user)
+  // console.log(user.PumpId);
   const [show, setShow] = useState(false)
+  const [form, setForm] = useState({})
+  const [tanks,setTanks] = useState([])
 
   function handleClose() {
     setShow(false)
@@ -38,9 +41,40 @@ export default function Tank() {
     }
   }
 
+  const onChangeHandler = (event) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+    console.log(form)
+  }
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    // console.log(form);
+    const res = await mainservice.CreateTank({Tank:form}, user.PumpId)
+    if (res.data != null) {
+      GetTanks()
+    } else {
+      console.log(res)
+    }
+    handleClose()
+  }
+
+  async function GetTanks() {
+    const res = await mainservice.GetTankDetails(user.PumpId)
+    if (res.data != null) {
+      setTanks(res.data.result2.Tank)
+      console.log(tanks);
+    } else {
+      console.log(res)
+    }
+  }
+
   switchSkin(skin)
   useEffect(() => {
     switchSkin(skin)
+    GetTanks()
   }, [skin])
   return (
     <React.Fragment>
@@ -88,13 +122,13 @@ export default function Tank() {
                   <h6>Tank Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="KL XX XXXX" />
+                  <Form.Control name="TankNumber" onChange={onChangeHandler} type="text" />
                 </Col>
                 <Col md>
                   <h6>Volume</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Agent 1" />
+                  <Form.Control name="Volume" onChange={onChangeHandler} type="text" />
                 </Col>
               </Row>
             </div>
@@ -104,13 +138,23 @@ export default function Tank() {
                   <h6>Product</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="KL XX XXXX" />
+                  <Form.Control
+                    name="Product"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="KL XX XXXX"
+                  />
                 </Col>
                 <Col md>
                   <h6>Initial Quantity</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Agent 1" />
+                  <Form.Control
+                    name="Quantity"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="Agent 1"
+                  />
                 </Col>
               </Row>
             </div>
@@ -118,10 +162,15 @@ export default function Tank() {
               <Row className="g-2">
                 <Col md="5">
                   <h6>Note</h6>
-                  <p>Temporibus autem quibusdam et aut officiis.</p>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control
+                    name="note"
+                    onChange={onChangeHandler}
+                    as="textarea"
+                    rows="3"
+                    placeholder="Enter tagline"
+                  />
                 </Col>
               </Row>
             </div>
@@ -130,130 +179,17 @@ export default function Tank() {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={onSubmitHandler}>
               Save Changes
             </Button>
           </Modal.Footer>
         </Modal>
         <Row className="g-3">
-          {[
-            {
-              icon: 'ri-shopping-bag-fill',
-              product: 'MS',
-              percent: {
-                color: 'success',
-                amount: 0.74
-              },
-              value: '14,803.80',
-              label: 'Total Sales',
-              last: {
-                color: 'success',
-                amount: '2.3%'
-              }
-            },
-            {
-              icon: 'ri-wallet-3-fill',
-              product: 'HSD',
-              percent: {
-                color: 'danger',
-                amount: 0.64
-              },
-              value: '8,100.63',
-              label: 'Total Expenses',
-              last: {
-                color: 'danger',
-                amount: '0.5%'
-              }
-            },
-            {
-              icon: 'ri-shopping-basket-fill',
-              product: 'HSD',
-              percent: {
-                color: 'danger',
-                amount: 0.38
-              },
-              value: '23,480',
-              label: 'Total Products',
-              last: {
-                color: 'danger',
-                amount: '0.2%'
-              }
-            },
-            {
-              icon: 'ri-shopping-basket-fill',
-              product: 'MS',
-              percent: {
-                color: 'success',
-                amount: 0.14
-              },
-              value: '18,060',
-              label: 'Products Sold',
-              last: {
-                color: 'success',
-                amount: '5.8%'
-              }
-            },
-            {
-              icon: 'ri-shopping-basket-fill',
-              product: 'XP',
-              percent: {
-                color: 'success',
-                amount: 0.344
-              },
-              value: '18,060',
-              label: 'Products Sold',
-              last: {
-                color: 'success',
-                amount: '5.8%'
-              }
-            },
-            {
-              icon: 'ri-shopping-basket-fill',
-              product: 'SPD',
-              percent: {
-                color: 'success',
-                amount: 0.44
-              },
-              value: '18,060',
-              label: 'Products Sold',
-              last: {
-                color: 'success',
-                amount: '5.8%'
-              }
-            },
-            {
-              icon: 'ri-shopping-basket-fill',
-              product: 'CNG',
-              percent: {
-                color: 'success',
-                amount: 0.2
-              },
-              value: '18,060',
-              label: 'Products Sold',
-              last: {
-                color: 'success',
-                amount: '5.8%'
-              }
-            },
-            {
-              icon: 'ri-shopping-basket-fill',
-              product: 'OIL',
-              percent: {
-                color: 'success',
-                amount: 0.9
-              },
-              value: '18,060',
-              label: 'Products Sold',
-              last: {
-                color: 'success',
-                amount: '5.8%'
-              }
-            }
-          ].map((item, index) => (
+          {tanks.map((item, index) => (
             <Col xs="6" md="3" xl="3" key={index}>
-              <Card  className="card-one card-product">
+              <Card className="card-one card-product">
                 <Card.Body className="p-3 ">
-                  <GaugeChart 
+                  <GaugeChart
                     id="gauge-chart5"
                     textColor={'#000000'}
                     needleColor={'gray'}
@@ -261,26 +197,26 @@ export default function Tank() {
                     nrOfLevels={420}
                     arcsLength={[0.1, 0.2, 0.45, 0.15, 0.1]}
                     colors={['red', 'orange', 'yellow', 'green', 'red']}
-                    percent={item.percent.amount}
+                    percent={item.Quantity/item.Volume}
                     arcPadding={0.02}
                   />
                   <div className="d-flex align-items-center justify-content-between mb-1">
                     <div className="card-icon text-success">
-                      <h5 style={{ fontWeight: 'bolder' }}>{item.product}</h5>
+                      <h5 style={{ fontWeight: 'bolder' }}>{item.Product}</h5>
                     </div>{' '}
                     <h6>TANK No.{index + 1}</h6>
-                    <h6 className={'fw-normal ff-numerals mb-0 text-' + item.percent.color}>
-                      {item.percent.amount}
+                    <h6 className={'fw-normal ff-numerals mb-0 text-success'}>
+                      {item.Quantity}
                     </h6>
                   </div>
-                  <h2 className="card-value ls--1 text-secondary">{item.value}</h2>
-                  <label className="card-label fw-medium text-secondary ">{item.label}</label>
+                  <h2 className="card-value ls--1 text-secondary">{item.Volume}</h2>
+                  {/* <label className="card-label fw-medium text-secondary ">{item.ProductCode}</label> */}
                   <span className="d-flex gap-1 fs-xs">
-                    <span className={'d-flex align-items-center text-' + item.last.color}>
-                      <span className="ff-numerals">{item.last.amount}</span>
+                    <span className={'d-flex align-items-center text-danger'}>
+                      <span className="ff-numerals">{item.note}</span>
                       <i
                         className={
-                          item.last.color === 'success' ? 'ri-arrow-up-line' : 'ri-arrow-down-line'
+                          'success' === 'success' ? 'ri-arrow-up-line' : 'ri-arrow-down-line'
                         }
                       ></i>
                     </span>

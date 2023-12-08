@@ -11,11 +11,13 @@ import img10 from '../../assets/img/img10.jpg'
 import img11 from '../../assets/img/img11.jpg'
 import img14 from '../../assets/img/img14.jpg'
 import Header from '../../layouts/Header'
+import mainservice from '../../Services/mainservice'
+import { useSelector, useDispatch } from 'react-redux'
 
 export default function PostEmployee() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
-
+  const user = useSelector((state) => state.loginedUser)
   const switchSkin = (skin) => {
     if (skin === 'dark') {
       const btnWhite = document.getElementsByClassName('btn-white')
@@ -33,52 +35,23 @@ export default function PostEmployee() {
       }
     }
   }
-
-  const [fields, setFields] = useState([
-    {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
-    }
-  ])
-  function calculateTotals() {
-    console.log()
+  const [form, setForm] = useState({})
+  const onChangeHandler = (event) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+    console.log(form)
   }
-
-  const handleAddField = () => {
-    const newItem = {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    console.log(form);
+    const res = await mainservice.PostEmployee(form,user.PumpId)
+    if (res.data != null) {
+      console.log(res.data)
+    } else {
+      console.log(res)
     }
-    setFields([...fields, newItem])
-    calculateTotals()
-  }
-
-  const handleRemoveField = (index) => {
-    const newFields = [...fields]
-    newFields.splice(index, 1)
-    setFields(newFields)
-    calculateTotals()
-  }
-
-  const handleChangeField = (index, event) => {
-    const { name, value } = event.target
-    const newFields = [...fields]
-    newFields[index][name] = value
-
-    // Calculate TotalPrice for the current row
-    if (name === 'Quantity' || name === 'Price') {
-      newFields[index].TotalPrice = (newFields[index].Quantity * newFields[index].Price).toFixed(2)
-    }
-
-    setFields(newFields)
-    calculateTotals()
-    console.log(fields)
   }
 
   switchSkin(skin)
@@ -97,7 +70,7 @@ export default function PostEmployee() {
             <Link to="#">Employee</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
-           Add Employee
+            Add Employee
           </li>
         </ol>
         <h2 className="main-title">Add Employee</h2>
@@ -108,59 +81,89 @@ export default function PostEmployee() {
             <Card.Text>short Description</Card.Text>
           </Card.Header>
           <Card.Body className="p-0">
-          <div className="setting-item">
+            <div className="setting-item">
               <Row className="g-2 align-items-center">
                 <Col md>
                   <h6>First Name</h6>
                 </Col>
                 <Col md>
-                <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control
+                    name="FirstName"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="eg.100-25484"
+                  />
                 </Col>
                 <Col md>
                   <h6>Last Name</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control
+                    name="LastName"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="eg.100-25484"
+                  />
                 </Col>
                 <Col md>
                   <h6>Date of Birth</h6>
                 </Col>
                 <Col md>
-                <Form.Control type="Date" />
+                  <Form.Control name="DOB" onChange={onChangeHandler} type="Date" />
                 </Col>
               </Row>
             </div>
             <div className="setting-item">
               <Row className="g-2 align-items-center">
-              <Col md>
+                <Col md>
                   <h6>Phone Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control
+                    name="PhoneNumber"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="eg.100-25484"
+                  />
                 </Col>
                 <Col md>
                   <h6>Email</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control
+                    name="Email"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="eg.100-25484"
+                  />
                 </Col>
               </Row>
             </div>
             <div className="setting-item">
-            <Row className="g-2">
-                <Col >
-                  <h6>Temporary Address</h6>    
-                  <p>Temporibus autem quibusdam et aut officiis.</p>
+              <Row className="g-2">
+                <Col>
+                  <h6>Temporary Address</h6>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control
+                    name="TemporaryAddress"
+                    onChange={onChangeHandler}
+                    as="textarea"
+                    rows="3"
+                    placeholder="Enter tagline"
+                  />
                 </Col>
                 <Col>
                   <h6>Permanent Address</h6>
-                  <p>Temporibus autem quibusdam et aut officiis.</p>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control
+                    name="PermanentAddress"
+                    onChange={onChangeHandler}
+                    as="textarea"
+                    rows="3"
+                    placeholder="Enter tagline"
+                  />
                 </Col>
               </Row>
             </div>
@@ -170,19 +173,34 @@ export default function PostEmployee() {
                   <h6>Aadhaar ID</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Petrol" />
+                  <Form.Control
+                    name="AadhaarId"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="Petrol"
+                  />
                 </Col>
                 <Col md>
                   <h6>Voter ID</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="600 Litre" />
+                  <Form.Control
+                    name="VoterId"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="600 Litre"
+                  />
                 </Col>
                 <Col md>
                   <h6>PAN Card Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="35000/-" />
+                  <Form.Control
+                    name="PANCardNumber"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="35000/-"
+                  />
                 </Col>
               </Row>
             </div>
@@ -192,19 +210,34 @@ export default function PostEmployee() {
                   <h6>PF Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Petrol" />
+                  <Form.Control
+                    name="PFNumber"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="Petrol"
+                  />
                 </Col>
                 <Col md>
                   <h6>ESI Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="600 Litre" />
+                  <Form.Control
+                    name="ESINumber"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="600 Litre"
+                  />
                 </Col>
                 <Col md>
                   <h6>UAN</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="35000/-" />
+                  <Form.Control
+                    name="UAN"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="35000/-"
+                  />
                 </Col>
               </Row>
             </div>
@@ -214,19 +247,34 @@ export default function PostEmployee() {
                   <h6>Designation</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Petrol" />
+                  <Form.Control
+                    name="Designation"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="Petrol"
+                  />
                 </Col>
                 <Col md>
                   <h6>Department</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="600 Litre" />
+                  <Form.Control
+                    name="Department"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="600 Litre"
+                  />
                 </Col>
                 <Col md>
                   <h6>Salary</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="35000/-" />
+                  <Form.Control
+                    name="Salary"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="35000/-"
+                  />
                 </Col>
               </Row>
             </div>
@@ -237,7 +285,13 @@ export default function PostEmployee() {
                   <p>Temporibus autem quibusdam et aut officiis.</p>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control
+                    name="Note"
+                    onChange={onChangeHandler}
+                    as="textarea"
+                    rows="3"
+                    placeholder="Enter tagline"
+                  />
                 </Col>
               </Row>
             </div>
@@ -250,25 +304,40 @@ export default function PostEmployee() {
             <Card.Text>Debitis aut rerum necessitatibus saepe eveniet ut et voluptates.</Card.Text>
           </Card.Header>
           <Card.Body className="p-0">
-          <div className="setting-item">
+            <div className="setting-item">
               <Row className="g-2 align-items-center">
                 <Col md>
                   <h6>Account Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Petrol" />
+                  <Form.Control
+                    name="AccountNumber"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="Petrol"
+                  />
                 </Col>
                 <Col md>
                   <h6>IFSC Code</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="600 Litre" />
+                  <Form.Control
+                    name="IFSCCode"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="600 Litre"
+                  />
                 </Col>
                 <Col md>
                   <h6>Branch</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="35000/-" />
+                  <Form.Control
+                    name="Branch"
+                    onChange={onChangeHandler}
+                    type="text"
+                    placeholder="35000/-"
+                  />
                 </Col>
               </Row>
             </div>
@@ -279,7 +348,11 @@ export default function PostEmployee() {
           <Card.Body className="p-0">
             <div className="setting-item d-flex justify-content-end">
               {' '}
-              <Button variant="primary" className="d-flex align-items-center gap-2">
+              <Button
+                onClick={onSubmitHandler}
+                variant="primary"
+                className="d-flex align-items-center gap-2"
+              >
                 <i className="ri-bar-chart-2-line fs-18 lh-1"></i> Save
               </Button>{' '}
             </div>

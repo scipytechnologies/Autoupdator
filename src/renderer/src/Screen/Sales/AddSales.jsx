@@ -12,6 +12,7 @@ import img10 from '../../assets/img/img10.jpg'
 import img11 from '../../assets/img/img11.jpg'
 import img14 from '../../assets/img/img14.jpg'
 import Header from '../../layouts/Header'
+import Select from 'react-select'
 
 export default function PostSales() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
@@ -37,17 +38,17 @@ export default function PostSales() {
 
   const [fields, setFields] = useState([
     {
-      ItemNo: '',
-      ItemName: '',
+      NozzleId: '',
+      Opening: 100,
+      Closing: 0,
       Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Amount: 0
     }
   ])
 
   const [fields2, setFields2] = useState([
     {
-      ItemNo: '',
+      Jambo: '',
       ItemName: '',
       Quantity: 0,
       Price: 0,
@@ -72,17 +73,22 @@ export default function PostSales() {
       TotalPrice: 0
     }
   ])
+  const [TotalSalesAmount, setTotalSalesAmount] = useState(0)
   function calculateTotals() {
-    console.log()
+    let sum = 0
+    fields.map((item) => {
+      sum = sum + parseInt(item.Amount)
+    })
+    setTotalSalesAmount(sum)
   }
 
   const handleAddField = () => {
     const newItem = {
-      ItemNo: '',
-      ItemName: '',
+      NozzleId: '',
+      Opening: 100,
+      Closing: 0,
       Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Amount: 0
     }
     setFields([...fields, newItem])
     calculateTotals()
@@ -152,13 +158,13 @@ export default function PostSales() {
     newFields[index][name] = value
 
     // Calculate TotalPrice for the current row
-    if (name === 'Quantity' || name === 'Price') {
-      newFields[index].TotalPrice = (newFields[index].Quantity * newFields[index].Price).toFixed(2)
+    if (name === 'Closing') {
+      newFields[index].Quantity = newFields[index].Closing - newFields[index].Opening
+      newFields[index].Amount = (newFields[index].Quantity * 98).toFixed(2)
     }
 
     setFields(newFields)
     calculateTotals()
-    console.log(fields)
   }
   const handleChangeField2 = (index, event) => {
     const { name, value } = event.target
@@ -208,7 +214,82 @@ export default function PostSales() {
 
   function handleClose() {
     setShow(false)
+
+    setTwok(0)
+
+    setfiveh(0)
+
+    settwoh(0)
+
+    setoneh(0)
+
+    setfivet(0)
+
+    settwot(0)
+
+    setten(0)
+
+    setfive(0)
+
+    settwo(0)
+
+    setone(0)
   }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  const [cash, setCash] = useState({})
+  const [twok, setTwok] = useState(0)
+  const [fiveh, setfiveh] = useState(0)
+  const [twoh, settwoh] = useState(0)
+  const [oneh, setoneh] = useState(0)
+  const [fivet, setfivet] = useState(0)
+  const [twot, settwot] = useState(0)
+  const [ten, setten] = useState(0)
+  const [five, setfive] = useState(0)
+  const [two, settwo] = useState(0)
+  const [one, setone] = useState(0)
+
+  const onChangeHandler = (event) => {
+    setCash({
+      ...cash,
+      [event.target.name]: event.target.value
+    })
+    if (event.target.name == 'TwoK') {
+      setTwok(event.target.value * 2000)
+    }
+    if (event.target.name == 'FiveH') {
+      setfiveh(event.target.value * 500)
+    }
+    if (event.target.name == 'TwoH') {
+      settwoh(event.target.value * 200)
+    }
+    if (event.target.name == 'OneH') {
+      setoneh(event.target.value * 100)
+    }
+    if (event.target.name == 'FiveT') {
+      setfivet(event.target.value * 50)
+    }
+    if (event.target.name == 'TwoT') {
+      settwot(event.target.value * 20)
+    }
+    if (event.target.name == 'Ten') {
+      setten(event.target.value * 10)
+    }
+    if (event.target.name == 'Five') {
+      setfive(event.target.value * 5)
+    }
+    if (event.target.name == 'Two') {
+      settwo(event.target.value * 2)
+    }
+    if (event.target.name == 'One') {
+      setone(event.target.value * 1)
+    }
+  }
+
+  const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
 
   switchSkin(skin)
   useEffect(() => {
@@ -289,11 +370,29 @@ export default function PostSales() {
                                 <td scope="row">
                                   <div className="mt-2">
                                     <div key={index}>
+                                      <Select
+                                        isDisabled={false}
+                                        isSearchable={true}
+                                        name="color"
+                                        options={options}
+                                        onChange={(event) =>
+                                          handleChangeField(index, {
+                                            target: { name: 'NozzleId', value: event.value }
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="mt-2">
+                                    <div key={index}>
                                       <Form.Control
-                                        type="Number"
-                                        name="ItemNo"
-                                        value={field.ItemNo}
-                                        placeholder="Item No"
+                                        type="text"
+                                        name="Opening"
+                                        // value={field.ItemName}
+                                        value={100}
+                                        disabled={true}
                                         onChange={(event) => handleChangeField(index, event)}
                                       />
                                     </div>
@@ -304,9 +403,8 @@ export default function PostSales() {
                                     <div key={index}>
                                       <Form.Control
                                         type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
+                                        name="Closing"
+                                        value={field.Closing}
                                         onChange={(event) => handleChangeField(index, event)}
                                       />
                                     </div>
@@ -317,9 +415,9 @@ export default function PostSales() {
                                     <div key={index}>
                                       <Form.Control
                                         type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
+                                        name="Quantity"
+                                        value={field.Quantity}
+                                        disabled={true}
                                         onChange={(event) => handleChangeField(index, event)}
                                       />
                                     </div>
@@ -330,22 +428,9 @@ export default function PostSales() {
                                     <div key={index}>
                                       <Form.Control
                                         type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
-                                        onChange={(event) => handleChangeField(index, event)}
-                                      />
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="mt-2">
-                                    <div key={index}>
-                                      <Form.Control
-                                        type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
+                                        name="Amount"
+                                        value={field.Amount}
+                                        disabled={true}
                                         onChange={(event) => handleChangeField(index, event)}
                                       />
                                     </div>
@@ -384,13 +469,12 @@ export default function PostSales() {
                 <Col md="5"></Col>
                 <Col md>
                   <h6>Total Sales Amount</h6>
-                  <h5>2000 </h5>
+                  <h5>{TotalSalesAmount.toFixed(2)}</h5>
                 </Col>
                 <Col md>
                   <h6>Amount Received</h6>
-                  <div className='d-flex'>
-                 
-                    <h5 style={{marginRight:'200px'}}>10000000</h5>
+                  <div className="d-flex">
+                    <h5 style={{ marginRight: '200px' }}>10000000</h5>
                     <Button
                       variant="primary"
                       className="d-flex align-items-center gap-2"
@@ -624,6 +708,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="TwoK"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -643,7 +729,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{twok}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -661,6 +747,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="FiveH"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -680,7 +768,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{fiveh}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -698,6 +786,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="TwoH"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -717,7 +807,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{twoh}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -735,6 +825,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="OneH"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -754,7 +846,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{oneh} </h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -772,6 +864,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="FiveT"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -791,7 +885,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{fivet} </h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -809,6 +903,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="TwoT"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -828,7 +924,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{twot}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -846,6 +942,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="Ten"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -865,7 +963,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{ten}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -883,6 +981,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="Five"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -902,7 +1002,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{five}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -920,6 +1020,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="Two"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -939,7 +1041,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{two}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
@@ -957,6 +1059,8 @@ export default function PostSales() {
                                 style={{ width: '200px' }}
                                 type="text"
                                 placeholder="Rs.0.0/-"
+                                name="One"
+                                onChange={onChangeHandler}
                               />
                               <div
                                 style={{
@@ -976,7 +1080,7 @@ export default function PostSales() {
                                   alignItems: 'center'
                                 }}
                               >
-                                <h5>2000 </h5>
+                                <h5>{one}</h5>
                               </div>
                             </ListGroup.Item>
                             <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>

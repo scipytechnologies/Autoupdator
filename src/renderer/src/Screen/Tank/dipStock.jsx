@@ -11,10 +11,16 @@ import img10 from '../../assets/img/img10.jpg'
 import img11 from '../../assets/img/img11.jpg'
 import img14 from '../../assets/img/img14.jpg'
 import Header from '../../layouts/Header'
+import mainservice from '../../Services/mainservice'
+import { useSelector, useDispatch } from 'react-redux'
+import Select from 'react-select'
 
 export default function DipStock() {
+  const user = useSelector((state) => state.loginedUser)
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
+  const [form, setForm] = useState({})
+  const [tanks, setTanks] = useState([])
 
   const switchSkin = (skin) => {
     if (skin === 'dark') {
@@ -36,26 +42,27 @@ export default function DipStock() {
 
   const [fields, setFields] = useState([
     {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Tank: '',
+      Quantity: ''
     }
   ])
+
+  const [quantityFilled, setQuantityFilled] = useState(0)
   function calculateTotals() {
-    console.log()
+    let sum = 0
+    const total = fields.map((item) => {
+      sum = sum + parseInt(item.Quantity)
+    })
+    setQuantityFilled(sum)
   }
 
   const handleAddField = () => {
     const newItem = {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Tank: '',
+      Quantity: ''
     }
     setFields([...fields, newItem])
+    console.log(fields)
     calculateTotals()
   }
 
@@ -70,19 +77,57 @@ export default function DipStock() {
     const { name, value } = event.target
     const newFields = [...fields]
     newFields[index][name] = value
-
-    // Calculate TotalPrice for the current row
-    if (name === 'Quantity' || name === 'Price') {
-      newFields[index].TotalPrice = (newFields[index].Quantity * newFields[index].Price).toFixed(2)
-    }
-
     setFields(newFields)
     calculateTotals()
-    console.log(fields)
+  }
+
+  const onChangeHandler = (event) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+    console.log(form)
+  }
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    // const Bal = form.Quantity - quantityFilled
+    const data = {...form,TankDistribution : fields, PumpId: user.PumpId,TotalQuantityFilled: quantityFilled,RemainingQuantity :form.Quantity - quantityFilled }
+    console.log(user);
+    const res = await mainservice.PostDipStock(data)
+    if (res.data != null) {
+      console.log(res.data)
+    } else {
+      console.log(res)
+    }
+  }
+
+  async function GetTanks() {
+    const res = await mainservice.GetTankDetails(user.PumpId)
+    if (res.data != null) {
+      setTanks(res.data.result2.Tank)
+      console.log(tanks)
+    } else {
+      console.log(res)
+    }
+  }
+  const options = tanks.map((x) => {
+    return { label: x.TankNumber + x.Product, value: x._id }
+  })
+  const [select, setSelect] = useState('')
+
+  const onSelectHandler = (event, field) => {
+    const temp = tanks.filter((x) => x._id === event.value)
+    setSelect((prev) => ({
+      ...prev,
+      [field]: event.value
+    }))
+    console.log(select)
   }
 
   switchSkin(skin)
   useEffect(() => {
+    GetTanks()
     switchSkin(skin)
   }, [skin])
   return (
@@ -114,13 +159,13 @@ export default function DipStock() {
                   <h6>Date</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="Date" />
+                  <Form.Control type="Date" name="Date" onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Invoice Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control type="text" name="InvoiceNumber" onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -130,13 +175,13 @@ export default function DipStock() {
                   <h6>Vehicle No.</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="KL XX XXXX" />
+                  <Form.Control type="text" name="VehicleNumber" onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Agent Name</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Agent 1" />
+                  <Form.Control type="text" name="AgentName" onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -146,19 +191,19 @@ export default function DipStock() {
                   <h6>Product</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Petrol" />
+                  <Form.Control type="text" name="Product" onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Quantity</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="600 Litre" />
+                  <Form.Control type="text" name="Quantity" onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Price</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="35000/-" />
+                  <Form.Control type="text" name="Price" onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -169,7 +214,7 @@ export default function DipStock() {
                   <p>Temporibus autem quibusdam et aut officiis.</p>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control as="textarea" rows="3" name="Note" onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -205,12 +250,21 @@ export default function DipStock() {
                                 <td scope="row">
                                   <div className="mt-2">
                                     <div key={index}>
-                                      <Form.Control
-                                        type="Number"
-                                        name="ItemNo"
-                                        value={field.ItemNo}
-                                        placeholder="Item No"
-                                        onChange={(event) => handleChangeField(index, event)}
+                                      <Select
+                                        styles={{
+                                          control: (baseStyles) => ({
+                                            ...baseStyles,
+                                            border: 0
+                                          })
+                                        }}
+                                        options={options}
+                                        isSearchable={true}
+                                        // onChange={(x) => onSelectHandler(x, 'Tank')}
+                                        onChange={(event) =>
+                                          handleChangeField(index, {
+                                            target: { name: 'Tank', value: event.value }
+                                          })
+                                        }
                                       />
                                     </div>
                                   </div>
@@ -220,7 +274,7 @@ export default function DipStock() {
                                     <div key={index}>
                                       <Form.Control
                                         type="text"
-                                        name="ItemName"
+                                        name="Quantity"
                                         value={field.ItemName}
                                         placeholder="Item Name"
                                         onChange={(event) => handleChangeField(index, event)}
@@ -258,16 +312,14 @@ export default function DipStock() {
             </div>
             <div className="setting-item">
               <Row className="g-2">
-                <Col md="5">
-            
+                <Col md="5"></Col>
+                <Col md>
+                  <h6>Total Quantity Filled</h6>
+                  <h5>{quantityFilled}</h5>
                 </Col>
                 <Col md>
-                <h6>Total Quantity Filled</h6>
-                  <h5>2000 </h5>
-                </Col>
-                <Col md>
-                <h6>Remaining Quantity</h6>
-                <h5>0 </h5>
+                  <h6>Remaining Quantity</h6>
+                  <h5>{form.Quantity - quantityFilled}</h5>
                 </Col>
               </Row>
             </div>
@@ -278,7 +330,7 @@ export default function DipStock() {
           <Card.Body className="p-0">
             <div className="setting-item d-flex justify-content-end">
               {' '}
-              <Button variant="primary" className="d-flex align-items-center gap-2">
+              <Button onClick={onSubmitHandler} variant="primary" className="d-flex align-items-center gap-2">
                 <i className="ri-bar-chart-2-line fs-18 lh-1"></i> Save
               </Button>{' '}
             </div>
