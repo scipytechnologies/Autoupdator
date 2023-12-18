@@ -33,6 +33,13 @@ import Category from "../Screen/Product/Category";
 import PostProduct from "../Screen/Product/AddProduct";
 import PostInventory from "../Screen/Inventory/AddInventory";
 
+import CustomerDetails from "../Screen/Customer/CustomerDetails";
+import EmployeeDetails from "../Screen/Employee/EmployeeDetails";
+import InventoryDetails from "../Screen/Inventory/InventoryDetails";
+import ProductDetails from "../Screen/Product/ProductDetails";
+import SalesAndBilling from "../Screen/Sales/SalesDetails";
+import StockDetails from "../Screen/Tank/StockDetails";
+import TankDetails from "../Screen/Tank/TankDetails";
 
 
 const protectedRoutes = [
@@ -64,6 +71,14 @@ const protectedRoutes = [
   { path: "pages/activity", element: <Activity /> },
   { path: "pages/events", element: <Events /> },
   { path: "pages/settings", element: <Settings /> },
+
+  { path: "dashboard/Customer/CustomerDetails", element: <CustomerDetails /> },
+  { path: "dashboard/Employee/EmployeeDetails", element: <EmployeeDetails /> },
+  { path: "dashboard/Inventory/InventoryDetails", element: <InventoryDetails /> },
+  { path: "dashboard/Product/ProductDetails", element: <ProductDetails /> },
+  { path: "dashboard/Sales/SalesDetails", element: <SalesAndBilling /> },
+  { path: "dashboard/DipStock/StockDetails", element: <StockDetails /> },
+  { path: "dashboard/Tank/TankDetails", element: <TankDetails /> },
  
 ]
 

@@ -48,29 +48,20 @@ export default function PostSales() {
 
   const [fields2, setFields2] = useState([
     {
-      Jambo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Machine: '',
+      Price: 0
     }
   ])
   const [fields3, setFields3] = useState([
     {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      UPIProvider: '',
+      Price: 0
     }
   ])
   const [fields4, setFields4] = useState([
     {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Method: '',
+      Price: 0
     }
   ])
   const [TotalSalesAmount, setTotalSalesAmount] = useState(0)
@@ -95,33 +86,24 @@ export default function PostSales() {
   }
   const handleAddField2 = () => {
     const newItem = {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Machine: '',
+      Price: 0
     }
     setFields2([...fields2, newItem])
     calculateTotals()
   }
   const handleAddField3 = () => {
     const newItem = {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      UPIProvider: '',
+      Price: 0
     }
     setFields3([...fields3, newItem])
     calculateTotals()
   }
   const handleAddField4 = () => {
     const newItem = {
-      ItemNo: '',
-      ItemName: '',
-      Quantity: 0,
-      Price: 0,
-      TotalPrice: 0
+      Method: '',
+      Price: 0
     }
     setFields4([...fields4, newItem])
     calculateTotals()
@@ -165,75 +147,91 @@ export default function PostSales() {
 
     setFields(newFields)
     calculateTotals()
+    TotalReceivedAmount()
+  }
+  const [cardsAmount, setCardsAmount] = useState(0)
+  function TotalsInCards() {
+    let sum = 0
+    fields2.map((item) => {
+      sum = sum + parseInt(item.Price)
+    })
+    setCardsAmount(sum)
+    TotalReceivedAmount()
   }
   const handleChangeField2 = (index, event) => {
     const { name, value } = event.target
     const newFields = [...fields2]
     newFields[index][name] = value
-
-    // Calculate TotalPrice for the current row
-    if (name === 'Quantity' || name === 'Price') {
-      newFields[index].TotalPrice = (newFields[index].Quantity * newFields[index].Price).toFixed(2)
-    }
-
     setFields2(newFields)
-    calculateTotals()
-    console.log(fields)
+    TotalsInCards()
+    TotalReceivedAmount()
+  }
+  const [upisAmount, setUPIsAmount] = useState(0)
+  function TotalsInUPI() {
+    let sum = 0
+    fields3.map((item) => {
+      sum = sum + parseInt(item.Price)
+    })
+    setUPIsAmount(sum)
+    TotalReceivedAmount()
   }
   const handleChangeField3 = (index, event) => {
     const { name, value } = event.target
     const newFields = [...fields3]
     newFields[index][name] = value
-
-    // Calculate TotalPrice for the current row
-    if (name === 'Quantity' || name === 'Price') {
-      newFields[index].TotalPrice = (newFields[index].Quantity * newFields[index].Price).toFixed(2)
-    }
-
     setFields3(newFields)
-    calculateTotals()
-    console.log(fields)
+    TotalsInUPI()
   }
-
+  const [othersAmount, setOthersAmount] = useState(0)
+  function TotalsInOthers() {
+    let sum = 0
+    fields4.map((item) => {
+      sum = sum + parseInt(item.Price)
+    })
+    setOthersAmount(sum)
+    TotalReceivedAmount()
+  }
   const handleChangeField4 = (index, event) => {
     const { name, value } = event.target
     const newFields = [...fields4]
     newFields[index][name] = value
-
-    // Calculate TotalPrice for the current row
-    if (name === 'Quantity' || name === 'Price') {
-      newFields[index].TotalPrice = (newFields[index].Quantity * newFields[index].Price).toFixed(2)
-    }
-
     setFields4(newFields)
-    calculateTotals()
-    console.log(fields)
+    TotalsInOthers()
   }
 
   const [show, setShow] = useState(false)
 
   function handleClose() {
     setShow(false)
+    // setTwok(0)
+    // setfiveh(0)
+    // settwoh(0)
+    // setoneh(0)
+    // setfivet(0)
+    // settwot(0)
+    // setten(0)
+    // setfive(0)
+    // settwo(0)
+    // setone(0)
+    // setTotalCash(0)
+    // setReceivedAmount(0)
+  }
 
+  function clearData() {
+    // setShow(false)
     setTwok(0)
-
     setfiveh(0)
-
     settwoh(0)
-
     setoneh(0)
-
     setfivet(0)
-
     settwot(0)
-
     setten(0)
-
     setfive(0)
-
     settwo(0)
-
     setone(0)
+    setTotalCash(0)
+    setReceivedAmount(0)
+    setCash('')
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   const [cash, setCash] = useState({})
@@ -283,18 +281,60 @@ export default function PostSales() {
     if (event.target.name == 'One') {
       setone(event.target.value * 1)
     }
+    console.log(cash)
   }
+  const [totalCash, setTotalCash] = useState(0)
 
+  function CalculateCash() {
+    setTotalCash(one + two + five + ten + oneh + twot + fivet + fiveh + twoh + twok)
+    // TotalReceivedAmount()
+  }
   const options = [
     { value: 'chocolate', label: 'Chocolate' },
     { value: 'strawberry', label: 'Strawberry' },
     { value: 'vanilla', label: 'Vanilla' }
   ]
+  const [receivedAmount, setReceivedAmount] = useState(0)
+  function TotalReceivedAmount() {
+    setReceivedAmount(totalCash + cardsAmount + upisAmount + othersAmount)
+  }
+  const [excessAmount, setExcessAmount] = useState(0)
+  function CalculateExcessAmount() {
+    setExcessAmount(receivedAmount - TotalSalesAmount)
+  }
 
   switchSkin(skin)
   useEffect(() => {
     switchSkin(skin)
   }, [skin])
+
+  useEffect(() => {
+    CalculateCash()
+  }, [one, two, five, ten, oneh, twot, fivet, fiveh, twoh, twok])
+
+  useEffect(() => {
+    TotalReceivedAmount()
+  }, [
+    one,
+    two,
+    five,
+    ten,
+    oneh,
+    twot,
+    fivet,
+    fiveh,
+    twoh,
+    twok,
+    cardsAmount,
+    totalCash,
+    upisAmount,
+    othersAmount
+  ])
+
+  useEffect(() => {
+    CalculateExcessAmount()
+  }, [receivedAmount, TotalSalesAmount])
+
   return (
     <React.Fragment>
       <Header onSkin={setSkin} />
@@ -474,7 +514,7 @@ export default function PostSales() {
                 <Col md>
                   <h6>Amount Received</h6>
                   <div className="d-flex">
-                    <h5 style={{ marginRight: '200px' }}>10000000</h5>
+                    <h5 style={{ marginRight: '200px' }}>{receivedAmount}</h5>
                     <Button
                       variant="primary"
                       className="d-flex align-items-center gap-2"
@@ -709,6 +749,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="TwoK"
+                                value={cash.TwoK}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -748,6 +789,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="FiveH"
+                                value={cash.FiveH}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -787,6 +829,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="TwoH"
+                                value={cash.TwoH}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -826,6 +869,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="OneH"
+                                value={cash.OneH}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -865,6 +909,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="FiveT"
+                                value={cash.FiveT}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -904,6 +949,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="TwoT"
+                                value={cash.TwoT}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -943,6 +989,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="Ten"
+                                value={cash.Ten}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -982,6 +1029,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="Five"
+                                value={cash.Five}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -1021,6 +1069,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="Two"
+                                value={cash.Two}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -1060,6 +1109,7 @@ export default function PostSales() {
                                 type="text"
                                 placeholder="Rs.0.0/-"
                                 name="One"
+                                value={cash.One}
                                 onChange={onChangeHandler}
                               />
                               <div
@@ -1093,7 +1143,7 @@ export default function PostSales() {
                                   padding: '5px'
                                 }}
                               >
-                                <h5>Total : 3000/- </h5>
+                                <h5>Total : {totalCash}/- </h5>
                               </div>
                             </ListGroup.Item>
                           </ListGroup>
@@ -1128,13 +1178,18 @@ export default function PostSales() {
                                               <td scope="row">
                                                 <div className="mt-2">
                                                   <div key={index}>
-                                                    <Form.Control
-                                                      type="Number"
-                                                      name="ItemNo"
-                                                      value={field.ItemNo}
-                                                      placeholder="Item No"
+                                                    <Select
+                                                      isDisabled={false}
+                                                      isSearchable={true}
+                                                      name="color"
+                                                      options={options}
                                                       onChange={(event) =>
-                                                        handleChangeField2(index, event)
+                                                        handleChangeField2(index, {
+                                                          target: {
+                                                            name: 'Machine',
+                                                            value: event.value
+                                                          }
+                                                        })
                                                       }
                                                     />
                                                   </div>
@@ -1145,8 +1200,8 @@ export default function PostSales() {
                                                   <div key={index}>
                                                     <Form.Control
                                                       type="text"
-                                                      name="ItemName"
-                                                      value={field.ItemName}
+                                                      name="Price"
+                                                      value={field.Price}
                                                       placeholder="Item Name"
                                                       onChange={(event) =>
                                                         handleChangeField2(index, event)
@@ -1185,17 +1240,19 @@ export default function PostSales() {
                             </Row>
                           </div>
                           <div className="setting-item">
-                            <Row className="g-2">
-                              <Col md="5"></Col>
-                              <Col md>
-                                <h6>Total Quantity Filled</h6>
-                                <h5>2000 </h5>
-                              </Col>
-                              <Col md>
-                                <h6>Remaining Quantity</h6>
-                                <h5>0 </h5>
-                              </Col>
-                            </Row>
+                            <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  width: '100%',
+                                  justifyContent: 'end',
+                                  alignItems: 'center',
+                                  padding: '5px'
+                                }}
+                              >
+                                <h5>Total : {cardsAmount}/- </h5>
+                              </div>
+                            </ListGroup.Item>
                           </div>
                         </Card.Body>
                       </Card>
@@ -1228,13 +1285,18 @@ export default function PostSales() {
                                               <td scope="row">
                                                 <div className="mt-2">
                                                   <div key={index}>
-                                                    <Form.Control
-                                                      type="Number"
-                                                      name="ItemNo"
-                                                      value={field.ItemNo}
-                                                      placeholder="Item No"
+                                                    <Select
+                                                      isDisabled={false}
+                                                      isSearchable={true}
+                                                      name="color"
+                                                      options={options}
                                                       onChange={(event) =>
-                                                        handleChangeField3(index, event)
+                                                        handleChangeField3(index, {
+                                                          target: {
+                                                            name: 'UPIProvider',
+                                                            value: event.value
+                                                          }
+                                                        })
                                                       }
                                                     />
                                                   </div>
@@ -1245,9 +1307,9 @@ export default function PostSales() {
                                                   <div key={index}>
                                                     <Form.Control
                                                       type="text"
-                                                      name="ItemName"
-                                                      value={field.ItemName}
-                                                      placeholder="Item Name"
+                                                      name="Price"
+                                                      value={field.Price}
+                                                      placeholder="Price"
                                                       onChange={(event) =>
                                                         handleChangeField3(index, event)
                                                       }
@@ -1285,17 +1347,19 @@ export default function PostSales() {
                             </Row>
                           </div>
                           <div className="setting-item">
-                            <Row className="g-2">
-                              <Col md="5"></Col>
-                              <Col md>
-                                <h6>Total Quantity Filled</h6>
-                                <h5>2000 </h5>
-                              </Col>
-                              <Col md>
-                                <h6>Remaining Quantity</h6>
-                                <h5>0 </h5>
-                              </Col>
-                            </Row>
+                            <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  width: '100%',
+                                  justifyContent: 'end',
+                                  alignItems: 'center',
+                                  padding: '5px'
+                                }}
+                              >
+                                <h5>Total : {upisAmount}/- </h5>
+                              </div>
+                            </ListGroup.Item>
                           </div>
                         </Card.Body>
                       </Card>
@@ -1328,13 +1392,18 @@ export default function PostSales() {
                                               <td scope="row">
                                                 <div className="mt-2">
                                                   <div key={index}>
-                                                    <Form.Control
-                                                      type="Number"
-                                                      name="ItemNo"
-                                                      value={field.ItemNo}
-                                                      placeholder="Item No"
+                                                    <Select
+                                                      isDisabled={false}
+                                                      isSearchable={true}
+                                                      name="color"
+                                                      options={options}
                                                       onChange={(event) =>
-                                                        handleChangeField4(index, event)
+                                                        handleChangeField4(index, {
+                                                          target: {
+                                                            name: 'Method',
+                                                            value: event.value
+                                                          }
+                                                        })
                                                       }
                                                     />
                                                   </div>
@@ -1345,9 +1414,9 @@ export default function PostSales() {
                                                   <div key={index}>
                                                     <Form.Control
                                                       type="text"
-                                                      name="ItemName"
-                                                      value={field.ItemName}
-                                                      placeholder="Item Name"
+                                                      name="Price"
+                                                      value={field.Price}
+                                                      placeholder="Price"
                                                       onChange={(event) =>
                                                         handleChangeField4(index, event)
                                                       }
@@ -1385,17 +1454,19 @@ export default function PostSales() {
                             </Row>
                           </div>
                           <div className="setting-item">
-                            <Row className="g-2">
-                              <Col md="5"></Col>
-                              <Col md>
-                                <h6>Total Sales Amount</h6>
-                                <h5>2000 </h5>
-                              </Col>
-                              <Col md>
-                                <h6>Amount Received</h6>
-                                <h5>0 </h5>
-                              </Col>
-                            </Row>
+                            <ListGroup.Item className="d-flex" style={{ padding: '5px' }}>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  width: '100%',
+                                  justifyContent: 'end',
+                                  alignItems: 'center',
+                                  padding: '5px'
+                                }}
+                              >
+                                <h5>Total : {othersAmount}/- </h5>
+                              </div>
+                            </ListGroup.Item>
                           </div>
                         </Card.Body>
                       </Card>
@@ -1409,14 +1480,14 @@ export default function PostSales() {
             <div style={{ width: '80%' }}>
               <ListGroup>
                 <ListGroup.Item>
-                  Total Sales Amount :20000/- <br />
-                  Total Received Amount :20000/- <br />
-                  Excess Amount :20000/- <br />
+                  Total Sales Amount : {TotalSalesAmount}/- <br />
+                  Total Received Amount : {receivedAmount}/- <br />
+                  Excess Amount :{excessAmount}/- <br />
                 </ListGroup.Item>
               </ListGroup>
             </div>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
+            <Button variant="danger" onClick={clearData}>
+              Reset
             </Button>
             <Button variant="primary" onClick={handleClose}>
               Save Changes

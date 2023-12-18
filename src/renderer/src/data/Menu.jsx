@@ -11,21 +11,49 @@ const Menu = [
     "link": "dashboard/tank",
     "icon": "ri-pie-chart-2-line"
   },
+  // {
+  //   "label": "TankDetails",
+  //   "link": "dashboard/Tank/TankDetails",
+  //   "icon": "ri-pie-chart-2-line"
+  // },
   {
     "label": "Dip Stock",
     "link": "dashboard/dipStock",
     "icon": "ri-pie-chart-2-line"
-  },{
+  },
+  {
+    "label": "Stock Details",
+    "link": "dashboard/DipStock/StockDetails",
+    "icon": "ri-pie-chart-2-line"
+  },
+  {
     "label": "Add Employee",
     "link": "dashboard/addEmployee",
     "icon": "ri-pie-chart-2-line"
-  },{
+  },
+  {
+    "label": "Employee Details",
+    "link" : "dashboard/Employee/EmployeeDetails",
+    "icon" : "ri-pie-chart-2-line"
+  },
+  {
     "label": "Add Customer",
     "link": "dashboard/addCustomer",
     "icon": "ri-pie-chart-2-line"
-  },{
+  },
+  {
+    "label" : "Customer Details",
+    "link" : "dashboard/Customer/CustomerDetails",
+    "icon" : "ri-pie-chart-2-line"
+  },
+  {
     "label": "Add Sales",
     "link": "dashboard/addSales",
+    "icon": "ri-pie-chart-2-line"
+  },
+  {
+    "label": "Sales Details",
+    "link": "dashboard/Sales/SalesDetails",
     "icon": "ri-pie-chart-2-line"
   },
   {
@@ -39,9 +67,19 @@ const Menu = [
     "icon": "ri-pie-chart-2-line"
   },
   {
+    "label": "Product Details",
+    "link": "dashboard/Product/ProductDetails",
+    "icon": "ri-pie-chart-2-line"
+  },
+  {
     "label": "Add Inventory",
     "link": "dashboard/addinventory",
     "icon": "ri-pie-chart-2-line"
+  },
+  {
+    "label" : "Inventory Details",
+    "link" : "dashboard/Inventory/InventoryDetails",
+    "icon" : "ri-pie-chart-2-line"
   },
 ];
 const dashboardMenu = [
