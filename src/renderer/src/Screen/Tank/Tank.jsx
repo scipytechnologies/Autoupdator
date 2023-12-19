@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Nav, ProgressBar, Row, Modal, Form } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Footer from '../../layouts/Footer'
 import Header from '../../layouts/Header'
 import { dp3 } from '../../data/DashboardData'
@@ -14,7 +14,7 @@ export default function Tank() {
   // console.log(user.PumpId);
   const [show, setShow] = useState(false)
   const [form, setForm] = useState({})
-  const [tanks,setTanks] = useState([])
+  const [tanks, setTanks] = useState([])
 
   function handleClose() {
     setShow(false)
@@ -42,17 +42,57 @@ export default function Tank() {
   }
 
   const onChangeHandler = (event) => {
-    setForm({
+    const { name, value } = event.target;
+    setform({
       ...form,
       [event.target.name]: event.target.value
     })
-    console.log(form)
+    setUform({
+      ...uform,
+      [event.target.name]: event.target.value
+    });
+    console.log(uform);
   }
+
+  const onUpdateHandler = (event) => {
+    event.preventDefault()
+    console.log(uform)
+    updateTank(uform)
+  }
+
+  async function updateTank(uform) {
+    const res = await mainservice.updateTank(id, uform)
+    console.log("updateId", id)
+    if (res.data != null) {
+      console.log(res.data, "Employee Details Updated")
+    }
+    else {
+      console.log(res.data)
+    }
+  }
+
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [uform, setUform] = useState([]);
+  console.log(uform, "uformresult2details")
+  // console.log(uform?.result2?.AadhaarId, "individual")
+  const [editMode, setEditMode] = useState(false);
+  const id = searchParams.get("id");
+  const CheckEdit = async () => {
+    if (id) {
+      setEditMode(true)
+      const res = await mainservice.getTankById(id);
+      setUform(res.data.result2)
+      console.log(res.data.result2, "this");
+    }
+  }
+  useEffect(() => {
+    CheckEdit()
+  }, []);
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
     // console.log(form);
-    const res = await mainservice.CreateTank({Tank:form}, user.PumpId)
+    const res = await mainservice.CreateTank({ Tank: form }, user.PumpId)
     if (res.data != null) {
       GetTanks()
     } else {
@@ -197,7 +237,7 @@ export default function Tank() {
                     nrOfLevels={420}
                     arcsLength={[0.1, 0.2, 0.45, 0.15, 0.1]}
                     colors={['red', 'orange', 'yellow', 'green', 'red']}
-                    percent={item.Quantity/item.Volume}
+                    percent={item.Quantity / item.Volume}
                     arcPadding={0.02}
                   />
                   <div className="d-flex align-items-center justify-content-between mb-1">
@@ -220,6 +260,16 @@ export default function Tank() {
                         }
                       ></i>
                     </span>
+                    <Col xs="12">
+                      {editMode ?
+                        <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <Button onClick={onUpdateHandler} type="submit">Update</Button>
+                        </div> :
+                        <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <Button onClick={onSubmitHandler} type="submit">Submit</Button>
+                        </div>}
+
+                    </Col>
                     <span className="text-secondary">than last week</span>
                   </span>
                 </Card.Body>

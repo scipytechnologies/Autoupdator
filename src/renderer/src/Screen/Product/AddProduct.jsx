@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Col, Row, Form, Nav, Card, Button, Table } from 'react-bootstrap'
 import Footer from '../../layouts/Footer'
+import {useSearchParams} from "react-router-dom"
+import mainservice from '../../Services/mainservice'
 import HeaderMobile from '../../layouts/HeaderMobile'
 import Avatar from '../../components/Avatar'
 
@@ -33,6 +35,66 @@ export default function PostProduct() {
       }
     }
   }
+
+  const [form, setform] = useState({})
+  const onChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setform({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+    setUform({
+      ...uform,
+      [event.target.name]: event.target.value
+    });
+    console.log(uform);
+  }
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    console.log(form);
+    const res = await mainservice.createProduct(form, user.PumpId)
+    if (res.data != null) {
+      console.log(res.data)
+    } else {
+      console.log(res)
+    }
+  }
+
+  const onUpdateHandler = (event) => {
+    event.preventDefault()
+    console.log(uform)
+    updateProduct(uform)
+  }
+
+  async function updateProduct(uform) {
+    const res = await mainservice.updateProduct (id, uform)
+    console.log("updateId", id)
+    if (res.data != null) {
+      console.log(res.data, "Employee Details Updated")
+    }
+    else {
+      console.log(res.data)
+    }
+  }
+
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [uform, setUform] = useState([]);
+  console.log(uform, "uformresult2details")
+  // console.log(uform?.result2?.AadhaarId, "individual")
+  const [editMode, setEditMode] = useState(false);
+  const id = searchParams.get("id");
+  const CheckEdit = async () => {
+    if (id) {
+      setEditMode(true)
+      const res = await mainservice.getProductById(id);
+      setUform(res.data.result2)
+      console.log(res.data.result2, "this");
+    }
+  }
+  useEffect(() => {
+    CheckEdit()
+  }, []);
+
   switchSkin(skin)
   useEffect(() => {
     switchSkin(skin)
@@ -66,7 +128,7 @@ export default function PostProduct() {
                   <h6>SKU</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control type="text" name="SKU" value={uform.SKU} placeholder="eg.100-25484" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -76,13 +138,13 @@ export default function PostProduct() {
                   <h6>Product Name</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control type="text" name="Name" value={uform.Name} placeholder="eg.100-25484" onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Category</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="eg.100-25484" />
+                  <Form.Control type="text" name="Category" value={uform.Category} placeholder="eg.100-25484" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -93,7 +155,7 @@ export default function PostProduct() {
                   <p>Temporibus autem quibusdam et aut officiis.</p>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control as="textarea" rows="3" name="Description" value={uform.Description} placeholder="Enter tagline" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -103,13 +165,13 @@ export default function PostProduct() {
                   <h6>Brand</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Petrol" />
+                  <Form.Control type="text" name="Brand" value={uform.Brand} placeholder="Petrol" onChange={onChangeHandler}/>
                 </Col>
                 <Col md>
                   <h6>Tax</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="600 Litre" />
+                  <Form.Control type="text" name="Tax" value={uform.Tax} placeholder="600 Litre" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -119,13 +181,13 @@ export default function PostProduct() {
                   <h6>Price</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Petrol" />
+                  <Form.Control type="text" name="Price" value={uform.Price} placeholder="Petrol" onChange={onChangeHandler}/>
                 </Col>
                 <Col md>
                   <h6>Margin</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="35000/-" />
+                  <Form.Control type="text" name="Margin" value={uform.Margin} placeholder="35000/-" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -154,9 +216,16 @@ export default function PostProduct() {
         <Card className="card-settings mt-4">
           <Card.Body className="p-0">
             <div className="setting-item d-flex justify-content-end">
-              <Button variant="primary" className="d-flex align-items-center gap-2">
-                <i className="ri-bar-chart-2-line fs-18 lh-1"></i> Save
-              </Button>
+            <Col xs="12">
+                {editMode ?
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onUpdateHandler} type="submit">Update</Button>
+                  </div> :
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onSubmitHandler} type="submit">Submit</Button>
+                  </div>}
+
+              </Col>
             </div>
           </Card.Body>
         </Card>

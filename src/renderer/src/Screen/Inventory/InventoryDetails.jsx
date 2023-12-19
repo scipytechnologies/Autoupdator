@@ -80,7 +80,7 @@ function InventoryDetails() {
 
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                                        <Dropdown.Item onClick={() => navigate(`/dashboard/Inventory/createInventoryManagement/?id=${item._id}`)}>Edit</Dropdown.Item>
+                                                        <Dropdown.Item onClick={() => navigate(`/dashboard/addinventory/?id=${item._id}`)}>Edit</Dropdown.Item>
                                                         <Dropdown.Item style={{ color: 'red' }} onClick={() => onDeleteHandler(item)}>Delete</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>

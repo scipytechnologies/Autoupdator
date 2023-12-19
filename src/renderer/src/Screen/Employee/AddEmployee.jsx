@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Col, Row, Form, Nav, Card, Button, Table } from 'react-bootstrap'
 import Footer from '../../layouts/Footer'
+import { useSearchParams } from 'react-router-dom'
 import HeaderMobile from '../../layouts/HeaderMobile'
 import Avatar from '../../components/Avatar'
 
@@ -13,6 +14,7 @@ import img14 from '../../assets/img/img14.jpg'
 import Header from '../../layouts/Header'
 import mainservice from '../../Services/mainservice'
 import { useSelector, useDispatch } from 'react-redux'
+import { event } from 'jquery'
 
 export default function PostEmployee() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
@@ -35,24 +37,64 @@ export default function PostEmployee() {
       }
     }
   }
-  const [form, setForm] = useState({})
+  const [form, setform] = useState({})
   const onChangeHandler = (event) => {
-    setForm({
+    const { name, value } = event.target;
+    setform({
       ...form,
       [event.target.name]: event.target.value
     })
-    console.log(form)
+    setUform({
+      ...uform,
+      [event.target.name]: event.target.value
+    });
+    console.log(uform);
   }
   const onSubmitHandler = async (event) => {
     event.preventDefault()
     console.log(form);
-    const res = await mainservice.PostEmployee(form,user.PumpId)
+    const res = await mainservice.PostEmployee(form, user.PumpId)
     if (res.data != null) {
       console.log(res.data)
     } else {
       console.log(res)
     }
   }
+
+  const onUpdateHandler = (event) => {
+    event.preventDefault()
+    console.log(uform)
+    updateEmployee(uform)
+  }
+
+  async function updateEmployee(uform) {
+    const res = await mainservice.updateEmployee(id, uform)
+    console.log("updateId", id)
+    if (res.data != null) {
+      console.log(res.data, "Employee Details Updated")
+    }
+    else {
+      console.log(res.data)
+    }
+  } 
+
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [uform, setUform] = useState([]);
+  console.log(uform, "uformresult2details")
+  // console.log(uform?.result2?.AadhaarId, "individual")
+  const [editMode, setEditMode] = useState(false);
+  const id = searchParams.get("id");
+  const CheckEdit = async () => {
+    if (id) {
+      setEditMode(true)
+      const res = await mainservice.getEmployeeById(id);
+      setUform(res.data.result2)
+      console.log(res.data.result2, "this");
+    }
+  }
+  useEffect(() => {
+    CheckEdit()
+  }, []);
 
   switchSkin(skin)
   useEffect(() => {
@@ -89,6 +131,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="FirstName"
+                    value={uform.FirstName}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="eg.100-25484"
@@ -100,6 +143,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="LastName"
+                    value={uform.LastName}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="eg.100-25484"
@@ -109,7 +153,7 @@ export default function PostEmployee() {
                   <h6>Date of Birth</h6>
                 </Col>
                 <Col md>
-                  <Form.Control name="DOB" onChange={onChangeHandler} type="Date" />
+                  <Form.Control name="DOB" value={uform.DOB} onChange={onChangeHandler} type="Date" />
                 </Col>
               </Row>
             </div>
@@ -121,6 +165,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="PhoneNumber"
+                    value={uform.PhoneNumber}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="eg.100-25484"
@@ -132,6 +177,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="Email"
+                    value={uform.Email}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="eg.100-25484"
@@ -147,6 +193,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="TemporaryAddress"
+                    value={uform.TemporaryAddress}
                     onChange={onChangeHandler}
                     as="textarea"
                     rows="3"
@@ -159,6 +206,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="PermanentAddress"
+                    value={uform.PermanentAddress}
                     onChange={onChangeHandler}
                     as="textarea"
                     rows="3"
@@ -175,6 +223,8 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="AadhaarId"
+                    value={uform.AadhaarId}
+                    // value={uform.AadhaarId}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="Petrol"
@@ -186,6 +236,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="VoterId"
+                    value={uform.VoterId}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="600 Litre"
@@ -197,6 +248,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="PANCardNumber"
+                    value={uform.PANCardNumber}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="35000/-"
@@ -212,6 +264,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="PFNumber"
+                    value={uform.PFNumber}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="Petrol"
@@ -223,6 +276,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="ESINumber"
+                    value={uform.ESINumber}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="600 Litre"
@@ -234,6 +288,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="UAN"
+                    value={uform.UAN}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="35000/-"
@@ -249,6 +304,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="Designation"
+                    value={uform.Designation}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="Petrol"
@@ -260,6 +316,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="Department"
+                    value={uform.Department}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="600 Litre"
@@ -271,6 +328,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="Salary"
+                    value={uform.Salary}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="35000/-"
@@ -287,6 +345,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="Note"
+                    value={uform.Note}
                     onChange={onChangeHandler}
                     as="textarea"
                     rows="3"
@@ -312,6 +371,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="AccountNumber"
+                    value={uform.AccountNumber}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="Petrol"
@@ -323,6 +383,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="IFSCCode"
+                    value={uform.IFSCCode}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="600 Litre"
@@ -334,6 +395,7 @@ export default function PostEmployee() {
                 <Col md>
                   <Form.Control
                     name="Branch"
+                    value={uform.Branch}
                     onChange={onChangeHandler}
                     type="text"
                     placeholder="35000/-"
@@ -348,13 +410,16 @@ export default function PostEmployee() {
           <Card.Body className="p-0">
             <div className="setting-item d-flex justify-content-end">
               {' '}
-              <Button
-                onClick={onSubmitHandler}
-                variant="primary"
-                className="d-flex align-items-center gap-2"
-              >
-                <i className="ri-bar-chart-2-line fs-18 lh-1"></i> Save
-              </Button>{' '}
+              <Col xs="12">
+                {editMode ?
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onUpdateHandler} type="submit">Update</Button>
+                  </div> :
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onSubmitHandler} type="submit">Submit</Button>
+                  </div>}
+
+              </Col>{' '}
             </div>
           </Card.Body>
         </Card>
