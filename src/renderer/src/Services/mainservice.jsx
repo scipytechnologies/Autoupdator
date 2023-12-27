@@ -115,7 +115,7 @@ async function getProductById(id) {
   return response
 }
 
-async function updateProduct(id,data) {
+async function updateProduct(id, data) {
   const response = await apicall.apicall('put',9000,`ProductRouter/updateProduct/${id}`,data)
   return response
 }

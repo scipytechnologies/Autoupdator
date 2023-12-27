@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Col, Row, Form, Nav, Card, Button, Table } from 'react-bootstrap'
 import Footer from '../../layouts/Footer'
-import {useSearchParams} from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import mainservice from '../../Services/mainservice'
 import HeaderMobile from '../../layouts/HeaderMobile'
 import Avatar from '../../components/Avatar'
@@ -59,18 +59,34 @@ export default function PostProduct() {
       console.log(res)
     }
   }
-
-  const onUpdateHandler = (event) => {
+  const onUpdateHandler = async (event) => {
     event.preventDefault()
     console.log(uform)
-    updateProduct(uform)
+    await updateProduct(uform)
   }
 
   async function updateProduct(uform) {
-    const res = await mainservice.updateProduct (id, uform)
     console.log("updateId", id)
+    let payload = {
+      "product": [
+     {
+         "Name": uform?.Name,
+         "Description": uform?.Description,
+         "Category": uform?.Category,
+         "Tax": uform?.Tax,
+         "Brand": uform?.Brand,
+         "Price": uform?.Price,
+         "OnSale": uform?.OnSale,
+         "Profit": uform?.Profit,
+         "Margin": uform?.Margin,
+         "SKU": uform?.SKU
+     }
+      ]
+     }
+    const res = await mainservice.updateProduct(id, payload)
+    console.log(res,"res")
     if (res.data != null) {
-      console.log(res.data, "Employee Details Updated")
+      console.log(res.data, "Product Details Updated")
     }
     else {
       console.log(res.data)
@@ -78,17 +94,17 @@ export default function PostProduct() {
   }
 
   let [searchParams, setSearchParams] = useSearchParams();
-  const [uform, setUform] = useState([]);
-  console.log(uform, "uformresult2details")
-  // console.log(uform?.result2?.AadhaarId, "individual")
+  const [uform, setUform] = useState({});
+  console.log(uform, "productuform")
   const [editMode, setEditMode] = useState(false);
   const id = searchParams.get("id");
+  console.log(id,"search")
   const CheckEdit = async () => {
     if (id) {
       setEditMode(true)
       const res = await mainservice.getProductById(id);
-      setUform(res.data.result2)
-      console.log(res.data.result2, "this");
+      setUform(res.data.result2.product[0])
+      console.log(res.data.result2.product[0], "this");
     }
   }
   useEffect(() => {
