@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Col, Row, Form, Nav, Card, Button, Table } from 'react-bootstrap'
 import Footer from '../../layouts/Footer'
 import HeaderMobile from '../../layouts/HeaderMobile'
@@ -19,7 +19,7 @@ export default function DipStock() {
   const user = useSelector((state) => state.loginedUser)
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
-  const [form, setForm] = useState({})
+  const [form, setform] = useState({})
   const [tanks, setTanks] = useState([])
 
   const switchSkin = (skin) => {
@@ -81,20 +81,13 @@ export default function DipStock() {
     calculateTotals()
   }
 
-  const onChangeHandler = (event) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value
-    })
-    console.log(form)
-  }
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
     // const Bal = form.Quantity - quantityFilled
     const data = {...form,TankDistribution : fields, PumpId: user.PumpId,TotalQuantityFilled: quantityFilled,RemainingQuantity :form.Quantity - quantityFilled }
     console.log(user);
-    const res = await mainservice.PostDipStock(data)
+    const res = await mainservice.createDipStock(data)
     if (res.data != null) {
       console.log(res.data)
     } else {
@@ -124,6 +117,53 @@ export default function DipStock() {
     }))
     console.log(select)
   }
+  const onChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setform({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+    setUform({
+      ...uform,
+      [event.target.name]: event.target.value
+    });
+    console.log(uform);
+  }
+
+  const onUpdateHandler = (event) => {
+    event.preventDefault()
+    console.log(uform)
+    updateDipStock(uform)
+  }
+
+  async function updateDipStock(uform) {
+    const res = await mainservice.updateDipStock(id, uform)
+    console.log("updateId", id)
+    if (res.data != null) {
+      console.log(res.data, "Employee Details Updated")
+    }
+    else {
+      console.log(res.data)
+    }
+  }
+
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [uform, setUform] = useState([]);
+  console.log(uform, "uformresult2details")
+  // console.log(uform?.result2?.AadhaarId, "individual")
+  const [editMode, setEditMode] = useState(false);
+  const id = searchParams.get("id");
+  const CheckEdit = async () => {
+    if (id) {
+      setEditMode(true)
+      const res = await mainservice.getDipStockById(id);
+      setUform(res.data.result2)
+      console.log(res.data.result2, "this");
+    }
+  }
+  useEffect(() => {
+    CheckEdit()
+  }, []);
 
   switchSkin(skin)
   useEffect(() => {
@@ -159,13 +199,13 @@ export default function DipStock() {
                   <h6>Date</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="Date" name="Date" onChange={onChangeHandler} />
+                  <Form.Control type="Date" name="Date" value={uform.Date} onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Invoice Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" name="InvoiceNumber" onChange={onChangeHandler} />
+                  <Form.Control type="text" name="InvoiceNumber" value={uform.InvoiceNumber} onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -175,13 +215,13 @@ export default function DipStock() {
                   <h6>Vehicle No.</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" name="VehicleNumber" onChange={onChangeHandler} />
+                  <Form.Control type="text" name="VehicleNumber" value={uform.VehicleNumber} onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Agent Name</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" name="AgentName" onChange={onChangeHandler} />
+                  <Form.Control type="text" name="AgentName" value={uform.AgentName} onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -191,19 +231,19 @@ export default function DipStock() {
                   <h6>Product</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" name="Product" onChange={onChangeHandler} />
+                  <Form.Control type="text" name="Product" value={uform.Product} onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Quantity</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" name="Quantity" onChange={onChangeHandler} />
+                  <Form.Control type="text" name="Quantity" value={uform.Quantity} onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Price</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" name="Price" onChange={onChangeHandler} />
+                  <Form.Control type="text" name="Price" value={uform.Price} onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -214,7 +254,7 @@ export default function DipStock() {
                   <p>Temporibus autem quibusdam et aut officiis.</p>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" name="Note" onChange={onChangeHandler} />
+                  <Form.Control as="textarea" rows="3" name="Note" value={uform.Note} onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
@@ -330,9 +370,16 @@ export default function DipStock() {
           <Card.Body className="p-0">
             <div className="setting-item d-flex justify-content-end">
               {' '}
-              <Button onClick={onSubmitHandler} variant="primary" className="d-flex align-items-center gap-2">
-                <i className="ri-bar-chart-2-line fs-18 lh-1"></i> Save
-              </Button>{' '}
+               <Col xs="12">
+                {editMode ?
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onUpdateHandler} type="submit">Update</Button>
+                  </div> :
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onSubmitHandler} type="submit">Submit</Button>
+                  </div>}
+
+              </Col>{' '}
             </div>
           </Card.Body>
         </Card>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Nav, ProgressBar, Row, Modal, Form } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Footer from '../../layouts/Footer'
 import Header from '../../layouts/Header'
 import { dp3 } from '../../data/DashboardData'
@@ -16,7 +16,11 @@ export default function Tank() {
   const [nozzleModal, setNozzleModal] = useState(false)
   const [form, setForm] = useState({})
   const [tanks, setTanks] = useState([])
+<<<<<<< HEAD
   const [TankID, setTankID] = useState('')
+=======
+
+>>>>>>> 836649b942eddd599efe5818b2539a60351f787a
   function handleClose() {
     setShow(false)
   }
@@ -47,12 +51,52 @@ export default function Tank() {
   }
 
   const onChangeHandler = (event) => {
-    setForm({
+    const { name, value } = event.target;
+    setform({
       ...form,
       [event.target.name]: event.target.value
     })
-    console.log(form)
+    setUform({
+      ...uform,
+      [event.target.name]: event.target.value
+    });
+    console.log(uform);
   }
+
+  const onUpdateHandler = (event) => {
+    event.preventDefault()
+    console.log(uform)
+    updateTank(uform)
+  }
+
+  async function updateTank(uform) {
+    const res = await mainservice.updateTank(id, uform)
+    console.log("updateId", id)
+    if (res.data != null) {
+      console.log(res.data, "Employee Details Updated")
+    }
+    else {
+      console.log(res.data)
+    }
+  }
+
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [uform, setUform] = useState([]);
+  console.log(uform, "uformresult2details")
+  // console.log(uform?.result2?.AadhaarId, "individual")
+  const [editMode, setEditMode] = useState(false);
+  const id = searchParams.get("id");
+  const CheckEdit = async () => {
+    if (id) {
+      setEditMode(true)
+      const res = await mainservice.getTankById(id);
+      setUform(res.data.result2)
+      console.log(res.data.result2, "this");
+    }
+  }
+  useEffect(() => {
+    CheckEdit()
+  }, []);
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
@@ -288,6 +332,32 @@ export default function Tank() {
                       <b className="p-1">000012 </b>
                     </div>
                   </div>
+<<<<<<< HEAD
+=======
+                  <h2 className="card-value ls--1 text-secondary">{item.Volume}</h2>
+                  {/* <label className="card-label fw-medium text-secondary ">{item.ProductCode}</label> */}
+                  <span className="d-flex gap-1 fs-xs">
+                    <span className={'d-flex align-items-center text-danger'}>
+                      <span className="ff-numerals">{item.note}</span>
+                      <i
+                        className={
+                          'success' === 'success' ? 'ri-arrow-up-line' : 'ri-arrow-down-line'
+                        }
+                      ></i>
+                    </span>
+                    <Col xs="12">
+                      {editMode ?
+                        <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <Button onClick={onUpdateHandler} type="submit">Update</Button>
+                        </div> :
+                        <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <Button onClick={onSubmitHandler} type="submit">Submit</Button>
+                        </div>}
+
+                    </Col>
+                    <span className="text-secondary">than last week</span>
+                  </span>
+>>>>>>> 836649b942eddd599efe5818b2539a60351f787a
                 </Card.Body>
               </Card>
             </Col>

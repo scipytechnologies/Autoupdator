@@ -4,6 +4,9 @@ import { Col, Row, Form, Nav, Card, Button, Table } from 'react-bootstrap'
 import Footer from '../../layouts/Footer'
 import HeaderMobile from '../../layouts/HeaderMobile'
 import Avatar from '../../components/Avatar'
+import { useSearchParams } from 'react-router-dom'
+import mainservice from '../../Services/mainservice'
+import { useSelector, useDispatch } from 'react-redux'
 
 import img8 from '../../assets/img/img8.jpg'
 import img9 from '../../assets/img/img9.jpg'
@@ -15,7 +18,7 @@ import Header from '../../layouts/Header'
 export default function PostCustomer() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
-
+  const user = useSelector((state) => state.loginedUser)
   const switchSkin = (skin) => {
     if (skin === 'dark') {
       const btnWhite = document.getElementsByClassName('btn-white')
@@ -81,6 +84,67 @@ export default function PostCustomer() {
     console.log(fields)
   }
 
+  const [form, setform] = useState({})
+  const onChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setform({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+    setUform({
+      ...uform,
+      [event.target.name]: event.target.value
+    });
+    console.log(uform);
+  }
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    console.log(form);
+    const res = await mainservice.createCustomer(form, user.PumpId)
+    if (res.data != null) {
+      console.log(res.data)
+    } else {
+      console.log(res)
+    }
+  }
+
+  const onUpdateHandler = (event) => {
+    event.preventDefault()
+    console.log(uform)
+    updateCustomer(uform)
+  }
+
+  async function updateCustomer(uform) {
+    const res = await mainservice.updateCustomer(id, uform)
+    console.log("updateId", id)
+    if (res.data != null) {
+      console.log(res.data, "Customer Details Updated")
+    }
+    else {
+      console.log(res.data)
+    }
+  }
+
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [uform, setUform] = useState([]);
+  console.log(uform, "uformresult2details")
+  // console.log(uform?.result2[AadhaarId],"key")
+  const [editMode, setEditMode] = useState(false);
+  const id = searchParams.get("id");
+  const CheckEdit = async () => {
+    if (id) {
+      setEditMode(true)
+      const res = await mainservice.getCustomerById(id);
+      setUform(res.data.result2)
+      console.log(res.data.result2, "this");
+    }
+  }
+  useEffect(() => {
+    CheckEdit()
+  }, []);
+
+
   switchSkin(skin)
   useEffect(() => {
     switchSkin(skin)
@@ -114,19 +178,19 @@ export default function PostCustomer() {
                   <h6>Customer Name</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Enter Customer Name" />
+                  <Form.Control type="text" name="Name" value={uform.Name} placeholder="Enter Customer Name" onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>Phone Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Enter Phone Number " />
+                  <Form.Control type="text" name="MobileNo" value={uform.MobileNo} placeholder="Enter Phone Number " onChange={onChangeHandler} />
                 </Col>
                 <Col md>
                   <h6>GSTIN</h6>
                 </Col>
                 <Col md>
-                <Form.Control type="text" placeholder="Enter GST Number" />
+                <Form.Control type="text" name="GSTIN" value={uform.GSTIN} placeholder="Enter GST Number" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -136,13 +200,13 @@ export default function PostCustomer() {
                   <h6>Office Phone Number</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Enter Office Contact Number " />
+                  <Form.Control type="text" name="OfficePhoneNo" value={uform.OfficePhoneNo}  placeholder="Enter Office Contact Number " onChange={onChangeHandler}/>
                 </Col>
                 <Col md>
                   <h6>Email</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder=" " />
+                  <Form.Control type="text" name="EmailID" value={uform.EmailID} placeholder="Email ID" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -153,7 +217,7 @@ export default function PostCustomer() {
                   {/* <p>Temporibus autem quibusdam et aut officiis.</p> */}
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control as="textarea" rows="3" name="Address" value={uform.Address} placeholder="Enter tagline" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -164,7 +228,7 @@ export default function PostCustomer() {
                   <p>Add more information here</p>
                 </Col>
                 <Col md>
-                  <Form.Control as="textarea" rows="3" placeholder="Enter tagline" />
+                  <Form.Control as="textarea" rows="3" name="Note" value={uform.Note} placeholder="Enter tagline" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -183,13 +247,13 @@ export default function PostCustomer() {
                   <h6>Credit Limit</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Rs.15000/-" />
+                  <Form.Control type="text" name="CreditLimit" value={uform.CreditLimit} placeholder="Rs.15000/-" onChange={onChangeHandler}/>
                 </Col>
                 <Col md>
                   <h6>Credit Balance</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Rs.0.0/-" />
+                  <Form.Control type="text" name="CreditBalance" value={uform.CreditBalance} placeholder="Rs.0.0/-" onChange={onChangeHandler}/>
                 </Col>
               </Row>
             </div>
@@ -200,9 +264,16 @@ export default function PostCustomer() {
           <Card.Body className="p-0">
             <div className="setting-item d-flex justify-content-end">
               {' '}
-              <Button variant="primary" className="d-flex align-items-center gap-2">
-                <i className="ri-bar-chart-2-line fs-18 lh-1"></i> Save
-              </Button>{' '}
+              <Col xs="12">
+                {editMode ?
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onUpdateHandler} type="submit">Update</Button>
+                  </div> :
+                  <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={onSubmitHandler} type="submit">Submit</Button>
+                  </div>}
+
+              </Col>{' '}
             </div>
           </Card.Body>
         </Card>

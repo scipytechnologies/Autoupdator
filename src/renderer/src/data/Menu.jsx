@@ -11,11 +11,11 @@ const Menu = [
     "link": "dashboard/tank",
     "icon": "ri-pie-chart-2-line"
   },
-  // {
-  //   "label": "TankDetails",
-  //   "link": "dashboard/Tank/TankDetails",
-  //   "icon": "ri-pie-chart-2-line"
-  // },
+  {
+    "label": "TankDetails",
+    "link": "dashboard/Tank/TankDetails",
+    "icon": "ri-pie-chart-2-line"
+  },
   {
     "label": "Dip Stock",
     "link": "dashboard/dipStock",
