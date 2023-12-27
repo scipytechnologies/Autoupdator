@@ -13,11 +13,16 @@ export default function Tank() {
   const user = useSelector((state) => state.loginedUser)
   // console.log(user.PumpId);
   const [show, setShow] = useState(false)
+  const [nozzleModal, setNozzleModal] = useState(false)
   const [form, setForm] = useState({})
-  const [tanks,setTanks] = useState([])
-
+  const [tanks, setTanks] = useState([])
+  const [TankID, setTankID] = useState('')
   function handleClose() {
     setShow(false)
+  }
+  function handleCloseAddNozzle() {
+    setNozzleModal(false)
+    setTankID("")
   }
 
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
@@ -52,7 +57,7 @@ export default function Tank() {
   const onSubmitHandler = async (event) => {
     event.preventDefault()
     // console.log(form);
-    const res = await mainservice.CreateTank({Tank:form}, user.PumpId)
+    const res = await mainservice.CreateTank({ Tank: form }, user.PumpId)
     if (res.data != null) {
       GetTanks()
     } else {
@@ -65,7 +70,7 @@ export default function Tank() {
     const res = await mainservice.GetTankDetails(user.PumpId)
     if (res.data != null) {
       setTanks(res.data.result2.Tank)
-      console.log(tanks);
+      console.log(tanks)
     } else {
       console.log(res)
     }
@@ -110,6 +115,38 @@ export default function Tank() {
             </Button>
           </div>
         </div>
+
+        <Modal show={nozzleModal} onHide={handleCloseAddNozzle} size="lg" centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Add New Nozzle</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="setting-item">
+              <Row className="g-2 align-items-center">
+                <Col md>
+                  <h6>Nozzle Name</h6>
+                </Col>
+                <Col md>
+                  <Form.Control name="TankNumber" onChange={onChangeHandler} type="text" />
+                </Col>
+                <Col md>
+                  <h6>InitialReading</h6>
+                </Col>
+                <Col md>
+                  <Form.Control name="Volume" onChange={onChangeHandler} type="text" />
+                </Col>
+              </Row>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseAddNozzle}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={onSubmitHandler}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         <Modal show={show} onHide={handleClose} size="lg" centered>
           <Modal.Header closeButton>
@@ -189,6 +226,16 @@ export default function Tank() {
             <Col xs="6" md="3" xl="3" key={index}>
               <Card className="card-one card-product">
                 <Card.Body className="p-3 ">
+                  <div className="d-flex justify-content-end">
+                    <button
+                      onClick={() => {
+                        setNozzleModal(true)
+                        setTankID(item._id)
+                      }}
+                    >
+                      Add Nozzle
+                    </button>
+                  </div>
                   <GaugeChart
                     id="gauge-chart5"
                     textColor={'#000000'}
@@ -197,31 +244,50 @@ export default function Tank() {
                     nrOfLevels={420}
                     arcsLength={[0.1, 0.2, 0.45, 0.15, 0.1]}
                     colors={['red', 'orange', 'yellow', 'green', 'red']}
-                    percent={item.Quantity/item.Volume}
+                    percent={item.Quantity / item.Volume}
                     arcPadding={0.02}
                   />
-                  <div className="d-flex align-items-center justify-content-between mb-1">
-                    <div className="card-icon text-success">
-                      <h5 style={{ fontWeight: 'bolder' }}>{item.Product}</h5>
-                    </div>{' '}
-                    <h6>TANK No.{index + 1}</h6>
-                    <h6 className={'fw-normal ff-numerals mb-0 text-success'}>
-                      {item.Quantity}
-                    </h6>
+                  <div className="d-flex wrap justify-content-between">
+                    <div className="text-success" style={{ textAlign: 'center' }}>
+                      <h6>{item.Product}</h6>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <h6 className={'fw-normal ff-numerals text-success'}>
+                        {item.Quantity}/{item.Volume}
+                      </h6>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <h6>TANK No.{index + 1}</h6>
+                    </div>
                   </div>
-                  <h2 className="card-value ls--1 text-secondary">{item.Volume}</h2>
-                  {/* <label className="card-label fw-medium text-secondary ">{item.ProductCode}</label> */}
-                  <span className="d-flex gap-1 fs-xs">
-                    <span className={'d-flex align-items-center text-danger'}>
-                      <span className="ff-numerals">{item.note}</span>
-                      <i
-                        className={
-                          'success' === 'success' ? 'ri-arrow-up-line' : 'ri-arrow-down-line'
-                        }
-                      ></i>
-                    </span>
-                    <span className="text-secondary">than last week</span>
-                  </span>
+                  <div className="d-flex justify-content-between w-100">
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between w-100">
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>

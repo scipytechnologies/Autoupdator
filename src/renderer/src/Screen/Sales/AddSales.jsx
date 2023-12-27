@@ -231,7 +231,39 @@ export default function PostSales() {
     setone(0)
     setTotalCash(0)
     setReceivedAmount(0)
-    setCash('')
+    setUPIsAmount(0)
+    setOthersAmount(0)
+    setCardsAmount(0)
+    setCash({
+      TwoK: 0,
+      FiveH: 0,
+      TwoH: 0,
+      OneH: 0,
+      FiveT: 0,
+      TwoT: 0,
+      Ten: 0,
+      Five: 0,
+      Two: 0,
+      One: 0
+    })
+    setFields2([
+      {
+        Machine: '',
+        Price: 0
+      }
+    ])
+    setFields3([
+      {
+        UPIProvider: '',
+        Price: 0
+      }
+    ])
+    setFields4([
+      {
+        Method: '',
+        Price: 0
+      }
+    ])
   }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   const [cash, setCash] = useState({})
@@ -303,6 +335,40 @@ export default function PostSales() {
     setExcessAmount(receivedAmount - TotalSalesAmount)
   }
 
+  const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const ChangeHandler = (selectedOption) => {
+    setSelectedEmployee(selectedOption)
+  }
+  const [form, setForm] = useState({})
+  const onChangeHandlerbasic = (event) => {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value
+    })
+    console.log(form)
+  }
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault()
+    const data = {
+      Name: selectedEmployee.value,
+      Product: fields,
+      Dinomination: cash,
+      CardPayment: fields2,
+      UpiPayment : fields3,
+      OthersPayment : fields4
+    }
+    console.log(data)
+
+    // const res = await mainservice.CreateTank({Tank:form}, user.PumpId)
+    // if (res.data != null) {
+    //   // GetTanks()
+    //   console.log(res.data)
+    // } else {
+    //   console.log(res.data)
+    // }
+  }
+
   switchSkin(skin)
   useEffect(() => {
     switchSkin(skin)
@@ -364,19 +430,35 @@ export default function PostSales() {
                   <h6>Employee</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Choose Employee" />
+                  <Select
+                    isDisabled={false}
+                    isSearchable={true}
+                    name="color"
+                    options={options}
+                    onChange={ChangeHandler}
+                  />
                 </Col>
                 <Col md>
                   <h6>Shift</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" placeholder="Choose Shift" />
+                  <Form.Control
+                    type="text"
+                    placeholder="Choose Shift"
+                    name="Shift"
+                    onChange={onChangeHandlerbasic}
+                  />
                 </Col>
                 <Col md>
                   <h6>Date</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="Date" placeholder="Date" />
+                  <Form.Control
+                    type="Date"
+                    placeholder="Date"
+                    name="Date"
+                    onChange={onChangeHandlerbasic}
+                  />
                 </Col>
               </Row>
             </div>
@@ -514,7 +596,7 @@ export default function PostSales() {
                 <Col md>
                   <h6>Amount Received</h6>
                   <div className="d-flex">
-                    <h5 style={{ marginRight: '200px' }}>{receivedAmount}</h5>
+                    <h5 style={{ marginRight: '200px' }}>{receivedAmount.toFixed(2)}</h5>
                     <Button
                       variant="primary"
                       className="d-flex align-items-center gap-2"
@@ -528,179 +610,62 @@ export default function PostSales() {
             </div>
           </Card.Body>
         </Card>
-
-        {/* <Card className="card-settings mt-4">
-          <Card.Header>
-            <Card.Title>Tank Details</Card.Title>
-            <Card.Text>Debitis aut rerum necessitatibus saepe eveniet ut et voluptates.</Card.Text>
-          </Card.Header>
-          <Card.Body className="p-0">
-            <div className="setting-item">
-              <Row className="g-2">
-                <div>
-                  <Row className="g-2 align-items-center">
-                    <Col md>
-                      <Table size="sm" borderless className="mb-0" hover>
-                        <thead>
-                          <tr>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">Opening</th>
-                            <th scope="col">Closing</th>
-                            <th scope="col">Qunatity</th>
-                            <th scope="col">Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {fields2.map((field, index) => {
-                            return (
-                              <tr>
-                                <td scope="row">
-                                  <div className="mt-2">
-                                    <div key={index}>
-                                      <Form.Control
-                                        type="Number"
-                                        name="ItemNo"
-                                        value={field.ItemNo}
-                                        placeholder="Item No"
-                                        onChange={(event) => handleChangeField2(index, event)}
-                                      />
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="mt-2">
-                                    <div key={index}>
-                                      <Form.Control
-                                        type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
-                                        onChange={(event) => handleChangeField2(index, event)}
-                                      />
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="mt-2">
-                                    <div key={index}>
-                                      <Form.Control
-                                        type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
-                                        onChange={(event) => handleChangeField2(index, event)}
-                                      />
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="mt-2">
-                                    <div key={index}>
-                                      <Form.Control
-                                        type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
-                                        onChange={(event) => handleChangeField2(index, event)}
-                                      />
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="mt-2">
-                                    <div key={index}>
-                                      <Form.Control
-                                        type="text"
-                                        name="ItemName"
-                                        value={field.ItemName}
-                                        placeholder="Item Name"
-                                        onChange={(event) => handleChangeField2(index, event)}
-                                      />
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="mt-2">
-                                    <div className="input-group ">
-                                      <Button
-                                        className="ms-2"
-                                        variant="danger"
-                                        onClick={() => handleRemoveField2(index)}
-                                      >
-                                        <i class="ri-delete-bin-5-fill"></i>
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                        <div className="mt-3">
-                          <Button onClick={handleAddField2}>
-                            <i class="ri-add-circle-fill"></i> Add Item
-                          </Button>
-                        </div>
-                      </Table>
-                    </Col>
-                  </Row>
-                </div>
-              </Row>
-            </div>
-            <div className="setting-item">
-              <Row className="g-2">
-                <Col md="5">
-            
-                </Col>
-                <Col md>
-                <h6>Total Quantity Filled</h6>
-                  <h5>2000 </h5>
-                </Col>
-                <Col md>
-                <h6>Remaining Quantity</h6>
-                <h5>0 </h5>
-                </Col>
-              </Row>
-            </div>
-          </Card.Body>
-        </Card> */}
-
         <Card className="card-settings mt-4">
-          <Card.Header>
-            <Card.Title>Financial Record</Card.Title>
-            <Card.Text>Add initial financial information</Card.Text>
-          </Card.Header>
           <Card.Body className="p-0">
             <div className="setting-item">
               <Row className="g-2 align-items-center">
-                <Col md>{/* <h6>Credit Limit</h6> */}</Col>
-                <Col md>{/* <Form.Control type="text" placeholder="Rs.15000/-" /> */}</Col>
-                {/* <Col md>
-                  <h6>Credit Balance</h6>
+                <Col className="d-flex justify-content-end p-2">
+                  <div style={{ textAlign: 'right' }}>
+                    <h4>
+                      <b>Summary</b>
+                    </h4>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <h6>Grand Total :</h6>
+                      <h6>
+                        <b>{TotalSalesAmount.toFixed(2)}/-</b>
+                      </h6>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <h6 style={{ paddingRight: '20px' }}>Total Amount Received :</h6>
+                      <h6>
+                        <b>{receivedAmount.toFixed(2)}/-</b>
+                      </h6>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <h6>Credit Amount :</h6>
+                      <h6>
+                        <b>{othersAmount.toFixed(2)}/-</b>
+                      </h6>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <h6>Excess Amount :</h6>
+                      <h6>
+                        <b>{excessAmount.toFixed(2)}/-</b>
+                      </h6>
+                    </div>
+                  </div>
                 </Col>
-                <Col md>
-                  <Form.Control type="text" placeholder="Rs.0.0/-" />
-                </Col> */}
-                final Calculation
               </Row>
             </div>
           </Card.Body>
         </Card>
-
         <Card className="card-settings mt-4">
           <Card.Body className="p-0">
             <div className="setting-item d-flex justify-content-end">
-              {' '}
-              <Button variant="primary" className="d-flex align-items-center gap-2">
+              <Button
+                variant="primary"
+                className="d-flex align-items-center gap-2"
+                onClick={onSubmitHandler}
+              >
                 <i className="ri-bar-chart-2-line fs-18 lh-1"></i> Save
-              </Button>{' '}
+              </Button>
             </div>
           </Card.Body>
         </Card>
 
         <Modal show={show} onHide={handleClose} size="xl" centered>
           <Modal.Header closeButton>
-            <Modal.Title>Add New Tank</Modal.Title>
+            <Modal.Title>Cash Management</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Tab.Container id="left-tabs-example" defaultActiveKey="1">
