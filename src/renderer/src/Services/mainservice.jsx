@@ -125,8 +125,8 @@ async function deleteProduct(id) {
   return response
 }
 //////////////////////////////{Sales}////////////////////////////////////////
-async function createSalesAndBilling(data) {
-  const response = await apicall.apicall('post',9000,'SalesAndBilling/createSalesAndBilling',data)
+async function createSalesAndBilling(id,data) {
+  const response = await apicall.apicall('post',9000,`SalesAndBilling/createSalesAndBilling/${id}`,data)
   return response
 }
 async function getSalesAndBilling() {
@@ -148,8 +148,8 @@ async function deleteSalesAndBilling(id) {
   return response
 }
 ////////////////////////{Dipstock}////////////////////////////
-async function createDipStock(data) {
-  const response = await apicall.apicall('post',9000,'DipStockRouter/createDipStock',data)
+async function createDipStock(id,data) {
+  const response = await apicall.apicall('post',9000,`DipStockRouter/createDipStock/${id}`,data)
   return response
 }
 async function getDipStock(id) {
@@ -198,6 +198,15 @@ async function deletePump(id) {
   return response
 }
 
+async function createNozzle(data,id) {
+  const response = await apicall.apicall('put',9000,`pump/createNozzle/${id}`,data)
+  return response
+}
+async function deleteFuel(pumpid,id) {
+  const response = await apicall.apicall('delete',9000,`pump/deleteFuel/${pumpid}/${id}`)
+  return response
+}
+
 
 export default {
   GetUserById,
@@ -205,7 +214,9 @@ export default {
   Auth,
   CreateTank,
   GetTankDetails,
+  deleteFuel,
   PostDipStock,
+  createNozzle,
   PostEmployee,getCustomer,getEmployee,getInventoryManagement,getProduct,getSalesAndBilling,getDipStock,getPump,updateEmployee,getEmployeeById,
   deleteEmployee,createCustomer,getCustomerById,updateCustomer,deleteCustomer,createInventoryManagement,getInventoryManagementById,updateInventoryManagement,deleteInventoryManagement,
   createProduct,getProductById,updateProduct,deleteProduct,createSalesAndBilling,getSalesAndBillingById,updateSalesAndBilling,deleteSalesAndBilling,createDipStock,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Nav, ProgressBar, Row, Modal, Form } from 'react-bootstrap'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Footer from '../../layouts/Footer'
 import Header from '../../layouts/Header'
 import { dp3 } from '../../data/DashboardData'
@@ -8,25 +8,25 @@ import ReactApexChart from 'react-apexcharts'
 import { useSelector, useDispatch } from 'react-redux'
 import GaugeChart from 'react-gauge-chart'
 import mainservice from '../../Services/mainservice'
+import { pumpInfo } from '../../store/pump'
+import Select from 'react-select'
 
 export default function Tank() {
   const user = useSelector((state) => state.loginedUser)
-  // console.log(user.PumpId);
+  const nozzle = useSelector((state) => state.pumpstore.Nozzle)
+  const dispatch = useDispatch()
   const [show, setShow] = useState(false)
   const [nozzleModal, setNozzleModal] = useState(false)
   const [form, setForm] = useState({})
+  const [nozzleForm, setNozzleForm] = useState({})
   const [tanks, setTanks] = useState([])
-<<<<<<< HEAD
   const [TankID, setTankID] = useState('')
-=======
-
->>>>>>> 836649b942eddd599efe5818b2539a60351f787a
   function handleClose() {
     setShow(false)
   }
   function handleCloseAddNozzle() {
     setNozzleModal(false)
-    setTankID("")
+    setTankID('')
   }
 
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
@@ -50,58 +50,65 @@ export default function Tank() {
     }
   }
 
+  const fuel = useSelector((state) => state.pumpstore.Fuel)
+  const FuelOptions = (fuels) => {
+    return fuels.map((fuel) => {
+      const { FuelName, _id } = fuel
+      return { label: FuelName, value: _id }
+    })
+  }
+
+  const fuelData = FuelOptions(fuel)
+  const [selectedFuel, setSelectedFuel] = useState(null)
+  const ChangeSelect = (selectedOption) => {
+    setSelectedFuel(selectedOption)
+  }
+  const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
+
   const onChangeHandler = (event) => {
-    const { name, value } = event.target;
-    setform({
+    setForm({
       ...form,
       [event.target.name]: event.target.value
     })
-    setUform({
-      ...uform,
+  }
+  const onChangeNozzle = (event) => {
+    setNozzleForm({
+      ...nozzleForm,
       [event.target.name]: event.target.value
-    });
-    console.log(uform);
+    })
+    console.log(nozzleForm)
   }
 
-  const onUpdateHandler = (event) => {
+  const fetchPump = async (id) => {
+    const pumpdetails = await mainservice.getPumpById(id)
+    if (pumpdetails.data != null) {
+      dispatch(pumpInfo(pumpdetails.data.result2))
+    }
+  }
+
+  const onSubmitNozzle = async (event) => {
     event.preventDefault()
-    console.log(uform)
-    updateTank(uform)
-  }
 
-  async function updateTank(uform) {
-    const res = await mainservice.updateTank(id, uform)
-    console.log("updateId", id)
+    let data = { ...nozzleForm, FuelId: TankID }
+    const res = await mainservice.createNozzle({ Nozzle: data }, user.PumpId)
     if (res.data != null) {
-      console.log(res.data, "Employee Details Updated")
+      fetchPump(user.PumpId)
+    } else {
+      console.log(res)
     }
-    else {
-      console.log(res.data)
-    }
+    console.log('data', data)
+    handleClose()
   }
-
-  let [searchParams, setSearchParams] = useSearchParams();
-  const [uform, setUform] = useState([]);
-  console.log(uform, "uformresult2details")
-  // console.log(uform?.result2?.AadhaarId, "individual")
-  const [editMode, setEditMode] = useState(false);
-  const id = searchParams.get("id");
-  const CheckEdit = async () => {
-    if (id) {
-      setEditMode(true)
-      const res = await mainservice.getTankById(id);
-      setUform(res.data.result2)
-      console.log(res.data.result2, "this");
-    }
-  }
-  useEffect(() => {
-    CheckEdit()
-  }, []);
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
-    // console.log(form);
-    const res = await mainservice.CreateTank({ Tank: form }, user.PumpId)
+    const data = { ...form, Product: selectedFuel.label, ProductCode: selectedFuel.value }
+    console.log(data)
+    const res = await mainservice.CreateTank({ Tank: data }, user.PumpId)
     if (res.data != null) {
       GetTanks()
     } else {
@@ -171,13 +178,13 @@ export default function Tank() {
                   <h6>Nozzle Name</h6>
                 </Col>
                 <Col md>
-                  <Form.Control name="TankNumber" onChange={onChangeHandler} type="text" />
+                  <Form.Control name="NozzleName" onChange={onChangeNozzle} type="text" />
                 </Col>
                 <Col md>
-                  <h6>InitialReading</h6>
+                  <h6>Initial Reading</h6>
                 </Col>
                 <Col md>
-                  <Form.Control name="Volume" onChange={onChangeHandler} type="text" />
+                  <Form.Control name="Reading" onChange={onChangeNozzle} type="text" />
                 </Col>
               </Row>
             </div>
@@ -186,7 +193,7 @@ export default function Tank() {
             <Button variant="secondary" onClick={handleCloseAddNozzle}>
               Close
             </Button>
-            <Button variant="primary" onClick={onSubmitHandler}>
+            <Button variant="primary" onClick={onSubmitNozzle}>
               Save Changes
             </Button>
           </Modal.Footer>
@@ -219,11 +226,12 @@ export default function Tank() {
                   <h6>Product</h6>
                 </Col>
                 <Col md>
-                  <Form.Control
-                    name="Product"
-                    onChange={onChangeHandler}
-                    type="text"
-                    placeholder="KL XX XXXX"
+                  <Select
+                    isDisabled={false}
+                    isSearchable={true}
+                    name="color"
+                    options={fuelData}
+                    onChange={ChangeSelect}
                   />
                 </Col>
                 <Col md>
@@ -270,16 +278,23 @@ export default function Tank() {
             <Col xs="6" md="3" xl="3" key={index}>
               <Card className="card-one card-product">
                 <Card.Body className="p-3 ">
-                  <div className="d-flex justify-content-end">
-                    <button
+                  <div className="d-flex justify-content-between">
+                    <div className="d-flex p-1">
+                      <i className="ri-database-2-line"></i>
+                      <h6>TANK No.{index + 1}</h6>
+                    </div>
+                    <Button
+                      className="p-1"
+                      variant="white"
                       onClick={() => {
                         setNozzleModal(true)
                         setTankID(item._id)
                       }}
                     >
-                      Add Nozzle
-                    </button>
+                      <i class="ri-gas-station-fill"></i>
+                    </Button>
                   </div>
+
                   <GaugeChart
                     id="gauge-chart5"
                     textColor={'#000000'}
@@ -291,73 +306,63 @@ export default function Tank() {
                     percent={item.Quantity / item.Volume}
                     arcPadding={0.02}
                   />
-                  <div className="d-flex wrap justify-content-between">
-                    <div className="text-success" style={{ textAlign: 'center' }}>
-                      <h6>{item.Product}</h6>
+                  <div className="d-flex justify-content-between">
+                    <div className="p-1" style={{ textAlign: 'center' }}>
+                      <h6 style={{ fontWeight: 'bold' }}>{item.Product}</h6>
                     </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <h6 className={'fw-normal ff-numerals text-success'}>
+                    <div className="p-1" style={{ textAlign: 'center' }}>
+                      <h6 style={{ fontWeight: 'bold' }} className={'text-success'}>
                         {item.Quantity}/{item.Volume}
                       </h6>
                     </div>
-                    <div style={{ textAlign: 'center' }}>
+                    {/* <div className="bg-secondary" style={{ textAlign: 'center' }}>
                       <h6>TANK No.{index + 1}</h6>
-                    </div>
+                    </div> */}
                   </div>
-                  <div className="d-flex justify-content-between w-100">
-                    <div className="d-flex justify-content-center align-content-center">
-                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
-                        Nozzle Name 1 :
-                      </p>{' '}
-                      <b className="p-1">000012 </b>
-                    </div>
-                    <div className="d-flex justify-content-center align-content-center">
-                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
-                        Nozzle Name 1 :
-                      </p>{' '}
-                      <b className="p-1">000012 </b>
-                    </div>
-                  </div>
-                  <div className="d-flex justify-content-between w-100">
-                    <div className="d-flex justify-content-center align-content-center">
-                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
-                        Nozzle Name 1 :
-                      </p>{' '}
-                      <b className="p-1">000012 </b>
-                    </div>
-                    <div className="d-flex justify-content-center align-content-center">
-                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
-                        Nozzle Name 1 :
-                      </p>{' '}
-                      <b className="p-1">000012 </b>
-                    </div>
-                  </div>
-<<<<<<< HEAD
-=======
-                  <h2 className="card-value ls--1 text-secondary">{item.Volume}</h2>
-                  {/* <label className="card-label fw-medium text-secondary ">{item.ProductCode}</label> */}
-                  <span className="d-flex gap-1 fs-xs">
-                    <span className={'d-flex align-items-center text-danger'}>
-                      <span className="ff-numerals">{item.note}</span>
-                      <i
-                        className={
-                          'success' === 'success' ? 'ri-arrow-up-line' : 'ri-arrow-down-line'
-                        }
-                      ></i>
-                    </span>
-                    <Col xs="12">
-                      {editMode ?
-                        <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                          <Button onClick={onUpdateHandler} type="submit">Update</Button>
-                        </div> :
-                        <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                          <Button onClick={onSubmitHandler} type="submit">Submit</Button>
-                        </div>}
 
-                    </Col>
-                    <span className="text-secondary">than last week</span>
-                  </span>
->>>>>>> 836649b942eddd599efe5818b2539a60351f787a
+                  {nozzle.map((nitem) => {
+                    return (
+                      <div className="d-flex">
+                        {nitem.FuelId == item._id ? (
+                          <div className=" d-flex justify-content-between w-100">
+                            <h6>
+                              <i class="ri-gas-station-fill"></i> Nozzle : {nitem.NozzleName}
+                            </h6>
+                            <h6>{nitem.Reading}</h6>
+                          </div>
+                        ) : null}
+                      </div>
+                    )
+                  })}
+
+                  {/* <div className="d-flex justify-content-between w-100">
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>                  
+                  </div> */}
+                  {/* <div className="d-flex justify-content-between w-100">
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>
+                    <div className="d-flex justify-content-center align-content-center">
+                      <p className="m-2" style={{ fontSize: '11px', flexWrap: 'wrap' }}>
+                        Nozzle Name 1 :
+                      </p>{' '}
+                      <b className="p-1">000012 </b>
+                    </div>
+                  </div> */}
                 </Card.Body>
               </Card>
             </Col>

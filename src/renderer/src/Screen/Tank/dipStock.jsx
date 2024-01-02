@@ -87,7 +87,7 @@ export default function DipStock() {
     // const Bal = form.Quantity - quantityFilled
     const data = {...form,TankDistribution : fields, PumpId: user.PumpId,TotalQuantityFilled: quantityFilled,RemainingQuantity :form.Quantity - quantityFilled }
     console.log(user);
-    const res = await mainservice.createDipStock(data)
+    const res = await mainservice.createDipStock(user.PumpId,data)
     if (res.data != null) {
       console.log(res.data)
     } else {

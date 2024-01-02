@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Col, Row, Form, Nav, Card, Button, Table, Modal, Tab, ListGroup } from 'react-bootstrap'
 
 import Footer from '../../layouts/Footer'
@@ -13,10 +13,68 @@ import img11 from '../../assets/img/img11.jpg'
 import img14 from '../../assets/img/img14.jpg'
 import Header from '../../layouts/Header'
 import Select from 'react-select'
+import { useSelector, useDispatch } from 'react-redux'
+import mainservice from '../../Services/mainservice'
+import { pumpInfo } from '../../store/pump'
+
 
 export default function PostSales() {
+  const navigate =useNavigate()
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
+  const dispatch = useDispatch()
+  const employees = useSelector((state) => state.pumpstore.Employee)
+  const user = useSelector((state) => state.loginedUser)
+  const nozzle = useSelector((state) => state.pumpstore.Nozzle)
+  const tank = useSelector((state) => state.pumpstore.Tank)
+  const fuel = useSelector((state) => state.pumpstore.Fuel)
+  const card = useSelector((state) => state.pumpstore.CardPayment)
+  const upi = useSelector((state) => state.pumpstore.UPIPayment)
+  const creditors = useSelector((state) => state.pumpstore.Customer)
+
+  const CustomerOptions = (x) => {
+    return x.map((y) => {
+      const { CustomerName } = y
+      return { label: CustomerName, value: CustomerName }
+    })
+  }
+
+  const UpiOptions = (upis) => {
+    return upis.map((upi) => {
+      const { Name } = upi
+      return { label: Name, value: Name }
+    })
+  }
+
+  const EmployeeOptions = (employees) => {
+    return employees.map((employee) => {
+      const { EmployeeName, EmployeeId } = employee
+      return { label: EmployeeName, value: EmployeeId }
+    })
+  }
+  const CardPaymentOptions = (cardPayments) => {
+    return cardPayments.map((cardPayment) => {
+      const { Name } = cardPayment
+      return { label: Name, value: Name }
+    })
+  }
+
+  const NozzleOptions = (nozzles) => {
+    return nozzles.map((nozzle) => {
+      const { NozzleName, _id } = nozzle
+      return { label: NozzleName, value: _id }
+    })
+  }
+  const creditorData = CustomerOptions(creditors)
+  const CardPaymentData = CardPaymentOptions(card)
+  const NozzleData = NozzleOptions(nozzle)
+  const EmployeeData = EmployeeOptions(employees)
+  const UpiData = UpiOptions(upi)
+  const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
 
   const switchSkin = (skin) => {
     if (skin === 'dark') {
@@ -39,8 +97,10 @@ export default function PostSales() {
   const [fields, setFields] = useState([
     {
       NozzleId: '',
-      Opening: 100,
+      Opening: 0,
       Closing: 0,
+      Price: 0,
+      Product: '',
       Quantity: 0,
       Amount: 0
     }
@@ -76,13 +136,12 @@ export default function PostSales() {
   const handleAddField = () => {
     const newItem = {
       NozzleId: '',
-      Opening: 100,
+      Opening: 0,
       Closing: 0,
       Quantity: 0,
       Amount: 0
     }
     setFields([...fields, newItem])
-    calculateTotals()
   }
   const handleAddField2 = () => {
     const newItem = {
@@ -113,7 +172,6 @@ export default function PostSales() {
     const newFields = [...fields]
     newFields.splice(index, 1)
     setFields(newFields)
-    calculateTotals()
   }
 
   const handleRemoveField2 = (index) => {
@@ -142,11 +200,17 @@ export default function PostSales() {
     // Calculate TotalPrice for the current row
     if (name === 'Closing') {
       newFields[index].Quantity = newFields[index].Closing - newFields[index].Opening
-      newFields[index].Amount = (newFields[index].Quantity * 98).toFixed(2)
+      newFields[index].Amount = (newFields[index].Quantity * newFields[index].Price).toFixed(2)
     }
-
+    if (name === 'NozzleId') {
+      const opening = nozzle.filter((x) => x._id == value)
+      const Tank = tank.filter((x) => x._id == opening[0].FuelId)
+      const Fuel = fuel.filter((x) => x._id == Tank[0].ProductCode)
+      newFields[index]['Product'] = Fuel[0].FuelName
+      newFields[index]['Price'] = Fuel[0].FuelPricePerLitre
+      newFields[index]['Opening'] = opening[0].Reading
+    }
     setFields(newFields)
-    calculateTotals()
     TotalReceivedAmount()
   }
   const [cardsAmount, setCardsAmount] = useState(0)
@@ -321,11 +385,7 @@ export default function PostSales() {
     setTotalCash(one + two + five + ten + oneh + twot + fivet + fiveh + twoh + twok)
     // TotalReceivedAmount()
   }
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-  ]
+
   const [receivedAmount, setReceivedAmount] = useState(0)
   function TotalReceivedAmount() {
     setReceivedAmount(totalCash + cardsAmount + upisAmount + othersAmount)
@@ -347,26 +407,34 @@ export default function PostSales() {
     })
     console.log(form)
   }
+  
+
+  
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
     const data = {
-      Name: selectedEmployee.value,
+      Employee: selectedEmployee.label,
+      EmployeeId: selectedEmployee.value,
+      Shift: form.Shift,
+      TotalAmount: TotalSalesAmount,
+      PumpId: user.PumpId, 
+      ExcessAmount: excessAmount,
+      Date:form.Date,
       Product: fields,
       Dinomination: cash,
       CardPayment: fields2,
-      UpiPayment : fields3,
-      OthersPayment : fields4
+      UpiPayment: fields3,
+      OthersPayment: fields4
     }
     console.log(data)
 
-    // const res = await mainservice.CreateTank({Tank:form}, user.PumpId)
-    // if (res.data != null) {
-    //   // GetTanks()
-    //   console.log(res.data)
-    // } else {
-    //   console.log(res.data)
-    // }
+    const res = await mainservice.createSalesAndBilling(user.PumpId, data)
+    if (res.data != null) {
+      navigate('/dashboard/Sales/SalesDetails')
+    } else {
+      console.log(res)
+    }
   }
 
   switchSkin(skin)
@@ -377,6 +445,10 @@ export default function PostSales() {
   useEffect(() => {
     CalculateCash()
   }, [one, two, five, ten, oneh, twot, fivet, fiveh, twoh, twok])
+
+  useEffect(() => {
+    calculateTotals()
+  }, [fields])
 
   useEffect(() => {
     TotalReceivedAmount()
@@ -434,7 +506,7 @@ export default function PostSales() {
                     isDisabled={false}
                     isSearchable={true}
                     name="color"
-                    options={options}
+                    options={EmployeeData}
                     onChange={ChangeHandler}
                   />
                 </Col>
@@ -496,7 +568,7 @@ export default function PostSales() {
                                         isDisabled={false}
                                         isSearchable={true}
                                         name="color"
-                                        options={options}
+                                        options={NozzleData}
                                         onChange={(event) =>
                                           handleChangeField(index, {
                                             target: { name: 'NozzleId', value: event.value }
@@ -512,8 +584,7 @@ export default function PostSales() {
                                       <Form.Control
                                         type="text"
                                         name="Opening"
-                                        // value={field.ItemName}
-                                        value={100}
+                                        value={field.Opening}
                                         disabled={true}
                                         onChange={(event) => handleChangeField(index, event)}
                                       />
@@ -1147,7 +1218,7 @@ export default function PostSales() {
                                                       isDisabled={false}
                                                       isSearchable={true}
                                                       name="color"
-                                                      options={options}
+                                                      options={CardPaymentData}
                                                       onChange={(event) =>
                                                         handleChangeField2(index, {
                                                           target: {
@@ -1254,7 +1325,7 @@ export default function PostSales() {
                                                       isDisabled={false}
                                                       isSearchable={true}
                                                       name="color"
-                                                      options={options}
+                                                      options={UpiData}
                                                       onChange={(event) =>
                                                         handleChangeField3(index, {
                                                           target: {
@@ -1361,7 +1432,7 @@ export default function PostSales() {
                                                       isDisabled={false}
                                                       isSearchable={true}
                                                       name="color"
-                                                      options={options}
+                                                      options={creditorData}
                                                       onChange={(event) =>
                                                         handleChangeField4(index, {
                                                           target: {

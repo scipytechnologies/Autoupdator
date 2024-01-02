@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 export default function Home() {
   const user = useSelector((state) => state.loginedUser)
+  const pump = useSelector((state) => state.pumpstore)
   console.log(user);
 
 
@@ -509,7 +510,7 @@ export default function Home() {
               <li className="breadcrumb-item"><Link to="#">Dashboard</Link></li>
               <li className="breadcrumb-item active" aria-current="page">Home</li>
             </ol>
-            <h4 className="main-title mb-0">Welcome {user.firstName} {user.lastName}</h4>
+            <h4 className="main-title mb-0">Welcome {user.firstName} {user.lastName} to {pump.PumpName}</h4>
           </div>
           <div className="d-flex gap-2 mt-3 mt-md-0">
             <Button variant="" className="btn-white d-flex align-items-center gap-2">

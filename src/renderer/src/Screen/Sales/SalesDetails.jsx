@@ -6,12 +6,17 @@ import { Grid } from "gridjs-react";
 import { _ } from "gridjs-react";
 import { Link, useNavigate } from "react-router-dom";
 import mainservice from "../../Services/mainservice";
+import { pumpInfo } from "../../store/pump";
+import { useSelector, useDispatch } from 'react-redux'
 
 function SalesAndBilling() {
     const currentSkin = (localStorage.getItem('skin-mode')) ? 'dark' : '';
+    const dispatch = useDispatch()
+    const user = useSelector((state) => state.loginedUser)
+    const pump = useSelector((state) => state.pumpstore)
     const [skin, setSkin] = useState(currentSkin);
     const navigate = useNavigate();
-    const [user, setUser] = useState("")
+    // const [user, setUser] = useState("")
     const [data, setData] = useState([])
 
     async function getSalesAndBilling() {
@@ -20,8 +25,8 @@ function SalesAndBilling() {
         setData(res.data.result1)
     }
     useEffect(() => {
-        getSalesAndBilling()
-    }, []);
+       setData(pump.SalesAndBilling)
+    }, [pump]);
 
     async function deleteSalesAndBilling() {
         const res = await mainservice.deleteSalesAndBilling(id);
@@ -38,6 +43,18 @@ function SalesAndBilling() {
         console.log(item._id);
         deleteSalesAndBilling(item._id);
     }
+    const fetchPump = async (id) => {
+        const pumpdetails = await mainservice.getPumpById(id)
+          if (pumpdetails.data != null) {
+             dispatch(pumpInfo(pumpdetails.data.result2))
+             console.log(pumpdetails.data.result2);
+          }
+        }
+      
+
+    useEffect(() => {
+        fetchPump(user.PumpId)
+      }, [])
 
     return (
         <>
@@ -60,7 +77,8 @@ function SalesAndBilling() {
                     <Card.Body>
                         <Grid
                             data={data !== undefined ? data.map((item) => [
-                                item.Name,
+                                item.Date,
+                                item.Employee,
                                 item.Shift,
                                 item.TotalAmount,
                                 _(
@@ -86,7 +104,7 @@ function SalesAndBilling() {
                             ])
                             : []
                         }
-                        columns = {['Name', 'Shift', 'Total Amount', 'Action']}
+                        columns = {['Name','Employee', 'Shift', 'Total Sales Amount', 'Action']}
                         search = {true}
                         pagination = {true}
                         sort={true}
