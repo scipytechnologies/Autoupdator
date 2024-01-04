@@ -102,7 +102,8 @@ export default function PostSales() {
       Price: 0,
       Product: '',
       Quantity: 0,
-      Amount: 0
+      Amount: 0,
+      NozzleName:''
     }
   ])
 
@@ -209,8 +210,11 @@ export default function PostSales() {
       newFields[index]['Product'] = Fuel[0].FuelName
       newFields[index]['Price'] = Fuel[0].FuelPricePerLitre
       newFields[index]['Opening'] = opening[0].Reading
+      newFields[index]['NozzleName'] = opening[0].NozzleName
+
     }
     setFields(newFields)
+    console.log(fields);
     TotalReceivedAmount()
   }
   const [cardsAmount, setCardsAmount] = useState(0)
@@ -425,7 +429,9 @@ export default function PostSales() {
       Dinomination: cash,
       CardPayment: fields2,
       UpiPayment: fields3,
-      OthersPayment: fields4
+      OthersPayment: fields4,
+      TotalAmountRec: receivedAmount,
+      Credit :othersAmount
     }
     console.log(data)
 
