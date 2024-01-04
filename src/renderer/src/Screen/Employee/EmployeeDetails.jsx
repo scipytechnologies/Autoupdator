@@ -14,19 +14,18 @@ function EmployeeDetails() {
     const navigate = useNavigate()
     const [user, setUser] = useState("")
     const [data, setData] = useState([])
+    const employeeData = useSelector((state)=> state.pumpstore.Employee)
 
 
     async function getEmployee() {
-        const res = await mainservice.getEmployee();
-        console.log(res.data.result1)
-        setData(res.data.result1)
+        setData(employeeData)
     }
     useEffect(() => {
         getEmployee()
     }, []);
 
-    async function deleteEmployee(id) {
-        const res = await mainservice.deleteEmployee(id);
+    async function deleteEmployee(EmployeeId) {
+        const res = await mainservice.deleteEmployee(EmployeeId);
         if (res.data != null) {
             console.log("deleted");
             getEmployee()
@@ -37,8 +36,8 @@ function EmployeeDetails() {
     }
 
     const onDeleteHandler = (item) => {
-        console.log(item._id);
-        deleteEmployee(item._id);
+        console.log(item._EmployeeId);
+        deleteEmployee(item._EmployeeId);
     }
 
     return (
@@ -64,10 +63,9 @@ function EmployeeDetails() {
                 <Card>
                     <Card.Body>
                         <Grid
-                            data={data !== undefined ? data.map((item) => [
-                                item.FirstName,
-                                item.LastName,
-                                item.DOB,
+                            data={employeeData.map((item) => [
+                                item.EmployeeId,
+                                item.EmployeeName,
                                 _(
                                     <>
                                         <ButtonGroup>
@@ -93,9 +91,8 @@ function EmployeeDetails() {
 
                                 )
                             ])
-                                : []
                             }
-                            columns={['First Name', 'Last Name', 'DOB', 'Action']}
+                            columns={['Employee Id', 'Employee Name', 'Action']}
                             search={true}
                             pagination={true}
                             sort={true}

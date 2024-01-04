@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import mainservice from "../../Services/mainservice";
 import { Grid } from "gridjs-react";
 import { _ } from "gridjs-react";
+import { useSelector } from "react-redux";
 
 function ProductDetails () {
     const currentSkin = (localStorage.getItem('skin-mode')) ? 'dark' : '';
@@ -13,11 +14,10 @@ function ProductDetails () {
     const navigate = useNavigate()
     const [user, setUser] = useState("")
     const [data, setData] = useState([])
+    const productData = useSelector((state) => state.pumpstore.Product)
 
     async function getProduct() {
-        const res = await mainservice.getProduct()
-        console.log(res.data.result1)
-        setData(res.data.result1)
+        setData(productData)
     }
     useEffect(() => {
         getProduct()
@@ -60,10 +60,9 @@ function ProductDetails () {
             <Card>
                 <Card.Body>
                     <Grid
-                    data={data !== undefined ? data.map((item) => [
-                        item.CategoryName,
-                        item.CategoryImage,
-                        item.Description,
+                    data={productData.map((item) => [
+                        item._id,
+                        item.ProductId,
                         _(
                             <>
                             <ButtonGroup>
@@ -84,9 +83,9 @@ function ProductDetails () {
                             </>
                         )
                     ])
-                    : []
+
                 } 
-                columns={['Category Name', 'Category Image', 'Description', 'Action']}
+                columns={['Id', 'Product Id', 'Action']}
                 search={true}
                 pagination={true}
                 sort={true}

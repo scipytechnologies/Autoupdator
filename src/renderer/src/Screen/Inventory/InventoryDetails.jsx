@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom"
 import mainservice from "../../Services/mainservice";
 import { Grid } from "gridjs-react";
 import { _ } from "gridjs-react";
+import { useSelector } from "react-redux";
 
 function InventoryDetails() {
     const currentSkin = (localStorage.getItem('skin-mode')) ? 'dark' : '';
@@ -13,11 +14,10 @@ function InventoryDetails() {
     const navigate = useNavigate()
     const [user, setUser] = useState("")
     const [data, setData] =  useState([])
+    const inventoryData = useSelector((state) => state.pumpstore.InventoryManagement)
 
     async function getInventoryManagement() {
-        const res = await mainservice.getInventoryManagement()
-        console.log(res.data.result1)
-        setData(res.data.result1)
+        setData(inventoryData)
     }
     useEffect(() => {
         getInventoryManagement()
@@ -62,10 +62,9 @@ function InventoryDetails() {
                 <Card>
                     <Card.Body>
                         <Grid
-                            data={data !== undefined ? data.map((item) => [
-                                item.SKUNo,
-                                item.ItemName,
-                                item.ItemCategory,
+                            data={inventoryData.map((item) => [
+                                item.InventoryManagementId,
+                                item.InventoryManagementName,
                                 _(
                                     <>
                                         <ButtonGroup>
@@ -91,9 +90,8 @@ function InventoryDetails() {
 
                                 )
                             ])
-                                : []
                             }
-                            columns={['SKU Number', 'Item Name', 'Item Category', 'Action']}
+                            columns={['Inventory Management Id', 'Inventory Management Name', 'Action']}
                             search={true}
                             pagination={true}
                             sort={true}

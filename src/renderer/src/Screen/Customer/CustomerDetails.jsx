@@ -14,12 +14,11 @@ function CustomerDetails() {
     const navigate = useNavigate()
     const [user, setUser] = useState("")
     const [data, setData] = useState([])
+    const customerData = useSelector((state) => state.pumpstore.Customer)
 
 
     async function getCustomer() {
-        const res = await mainservice.getCustomer();
-        console.log("hi",res.data.result1)
-        setData(res.data.result1)
+        setData(customerData)
     }
     useEffect(() => {
         getCustomer()
@@ -64,10 +63,9 @@ function CustomerDetails() {
                 <Card>
                     <Card.Body>
                         <Grid
-                            data={data !== undefined ? data.map((item) => [
-                                item.Category,
-                                item.Name,
-                                item.Address,
+                            data={customerData.map((item) => [
+                                item.CustomerId,
+                                item.CustomerName,
                                 _(
                                     <>
                                         <ButtonGroup>
@@ -93,9 +91,8 @@ function CustomerDetails() {
 
                                 )
                             ])
-                                : []
                             }
-                            columns={['Category', 'Name', 'Address', 'Action']}
+                            columns={['Customer Id', 'Customer Name', 'Action']}
                             search={true}
                             pagination={true}
                             sort={true}
