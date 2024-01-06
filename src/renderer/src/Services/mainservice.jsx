@@ -192,6 +192,11 @@ async function createFuel(id,data) {
   const response = await apicall.apicall('put',9000,`pump/createFuel/${id}`,data)
   return response
 }
+async function editFuel(pumpid,id,data) {
+  const response = await apicall.apicall('put',9000,`pump/editFuel/${pumpid}/${id}`,data)
+  return response
+}
+
 
 async function deletePump(id) {
   const response = await apicall.apicall('delete',9000,`pump/deletepump/${id}`)
@@ -220,5 +225,5 @@ export default {
   PostEmployee,getCustomer,getEmployee,getInventoryManagement,getProduct,getSalesAndBilling,getDipStock,getPump,updateEmployee,getEmployeeById,
   deleteEmployee,createCustomer,getCustomerById,updateCustomer,deleteCustomer,createInventoryManagement,getInventoryManagementById,updateInventoryManagement,deleteInventoryManagement,
   createProduct,getProductById,updateProduct,deleteProduct,createSalesAndBilling,getSalesAndBillingById,updateSalesAndBilling,deleteSalesAndBilling,createDipStock,
-  getDipStockById,updateDipStock,deleteDipStock,createPump,getPumpById,updatePump,createFuel,deletePump
+  getDipStockById,updateDipStock,deleteDipStock,createPump,getPumpById,updatePump,createFuel,deletePump,editFuel
 }

@@ -93,7 +93,7 @@ export default function Header({ onSkin }) {
 
     return <ul className="list-group">{notiList}</ul>
   }
-  const [editModes, setEditModes] = useState(() => Array(fuel.length).fill(true));
+  const [editModes, setEditModes] = useState(() => Array(fuel.length).fill(false));
 
   function FuelList() {
     const handleEditClick = (index) => {
@@ -104,14 +104,32 @@ export default function Header({ onSkin }) {
       });
     };
   
-    const handleSaveClick = (index) => {
+    const handleSaveClick = async (index,item) => {
       // Implement save logic here
       setEditModes((prevEditModes) => {
         const updatedEditModes = [...prevEditModes];
         updatedEditModes[index] = !updatedEditModes[index]; // Toggle edit mode
+    
+        const UpdatehData = async () => {
+          try {
+            const res = await mainservice.editFuel(user.PumpId,item._id,form);
+            if (res.data != null) {
+              fetchPump(user.PumpId);
+            } else {
+              console.log(res);
+            }
+          } catch (error) {
+            console.error("An error occurred:", error);
+          }
+        };
+    
+        UpdatehData(); // Call the asynchronous function here
+    
         return updatedEditModes;
       });
     };
+    
+    
   
     const notiList = fuel.map((item, index) => (
       <li className="list-group-item" key={index}>
@@ -144,7 +162,7 @@ export default function Header({ onSkin }) {
             <Button
               className="ms-1"
               variant="success"
-              onClick={() => handleSaveClick(index)}
+              onClick={() => handleSaveClick(index, item)}
             >
               Save
             </Button>
