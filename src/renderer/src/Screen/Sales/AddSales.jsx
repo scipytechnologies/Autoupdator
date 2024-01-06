@@ -19,7 +19,7 @@ import { pumpInfo } from '../../store/pump'
 
 
 export default function PostSales() {
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
   const dispatch = useDispatch()
@@ -31,6 +31,7 @@ export default function PostSales() {
   const card = useSelector((state) => state.pumpstore.CardPayment)
   const upi = useSelector((state) => state.pumpstore.UPIPayment)
   const creditors = useSelector((state) => state.pumpstore.Customer)
+  
 
   const CustomerOptions = (x) => {
     return x.map((y) => {
@@ -103,7 +104,7 @@ export default function PostSales() {
       Product: '',
       Quantity: 0,
       Amount: 0,
-      NozzleName:''
+      NozzleName: ''
     }
   ])
 
@@ -268,6 +269,16 @@ export default function PostSales() {
   }
 
   const [show, setShow] = useState(false)
+  const [cardshow, setCard] = useState(false)
+  const [showupi, setUpi] = useState(false)
+
+  function handleCardClose() {
+    setCard(false)
+  }
+
+  function handleUpiClose() {
+    setUpi(false)
+  }
 
   function handleClose() {
     setShow(false)
@@ -411,9 +422,9 @@ export default function PostSales() {
     })
     console.log(form)
   }
-  
 
-  
+
+
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
@@ -422,16 +433,16 @@ export default function PostSales() {
       EmployeeId: selectedEmployee.value,
       Shift: form.Shift,
       TotalAmount: TotalSalesAmount,
-      PumpId: user.PumpId, 
+      PumpId: user.PumpId,
       ExcessAmount: excessAmount,
-      Date:form.Date,
+      Date: form.Date,
       Product: fields,
       Dinomination: cash,
       CardPayment: fields2,
       UpiPayment: fields3,
       OthersPayment: fields4,
       TotalAmountRec: receivedAmount,
-      Credit :othersAmount
+      Credit: othersAmount
     }
     console.log(data)
 
@@ -478,6 +489,64 @@ export default function PostSales() {
   useEffect(() => {
     CalculateExcessAmount()
   }, [receivedAmount, TotalSalesAmount])
+
+
+  
+
+  //cardpost
+  const [cardform, setcardform] =  useState({ CardPayment: { Name: '' } });
+  const onChangeHandlercard = (event) => {
+    const { name, value } = event.target;
+    setcardform({
+      ...cardform,
+      CardPayment: {
+        ...cardform.CardPayment,
+        [name]: value,
+      },
+    })
+  }
+  const onSubmitHandlercard = async (event) => {
+    event.preventDefault()
+    console.log("card",cardform);
+      try {
+      const res = await mainservice.createCardPayment(cardform, user.PumpId);
+      console.log("hi", user.PumpId);
+      console.log(res)
+
+      if (res.data != null) {
+        console.log("result",res.data);
+      } else {
+        console.log(res);
+      }
+    } catch (error) {
+      console.error('Error submitting card payment:', error);
+    }
+  }
+
+  
+  //upipost
+  const [upiform, setupiform] = useState({ UPIPayment: { Name: '' } });
+  const onChangeHandlerupi = (event) => {
+    const { name, value } = event.target;
+    setupiform({
+      ...upiform,
+      UPIPayment: {
+        ...cardform.UPIPayment,
+        [name]: value,
+      },
+    })
+  }
+  const onSubmitHandlerupi = async (event) => {
+    event.preventDefault()
+    console.log(upiform);
+    const res = await mainservice.createUPIPayment(upiform, user.PumpId)
+    console.log("hi",user.PumpId)
+    if (res.data != null) {
+      console.log(res.data)
+    } else {
+      console.log(res)
+    }
+  }
 
   return (
     <React.Fragment>
@@ -1194,6 +1263,18 @@ export default function PostSales() {
                     </Tab.Pane>
                     <Tab.Pane eventKey="2">
                       <Card className="card-settings mt-4">
+                        <div className="d-flex justify-content-end gap-2 mt-3 mt-md-0">
+
+                          <Button
+                            variant="primary"
+                            className="d-flex align-items-center gap-2"
+                            onClick={() => {
+                              setCard(true)
+                            }}
+                          >
+                            Add Card
+                          </Button>
+                        </div>
                         <Card.Header>
                           <Card.Title>Tank Details</Card.Title>
                           <Card.Text>
@@ -1301,6 +1382,18 @@ export default function PostSales() {
                     </Tab.Pane>
                     <Tab.Pane eventKey="3">
                       <Card className="card-settings mt-4">
+                        <div className="d-flex justify-content-end gap-2 mt-3 mt-md-0">
+
+                          <Button
+                            variant="primary"
+                            className="d-flex align-items-center gap-2"
+                            onClick={() => {
+                              setUpi(true)
+                            }}
+                          >
+                            Add UPI
+                          </Button>
+                        </div>
                         <Card.Header>
                           <Card.Title>Tank Details</Card.Title>
                           <Card.Text>
@@ -1532,6 +1625,56 @@ export default function PostSales() {
               Reset
             </Button>
             <Button variant="primary" onClick={handleClose}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal show={cardshow} onHide={handleCardClose} size="lg" centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Add New Card</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="setting-item">
+              <Row className="g-2 align-items-center">
+                <Col md>
+                  <h6>Name</h6>
+                </Col>
+                <Col md>
+                  <Form.Control name="Name" onChange={onChangeHandlercard} type="text" placeholder='Name of Card'/>
+                </Col>
+              </Row>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCardClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={onSubmitHandlercard}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal show={showupi} onHide={handleUpiClose} size="lg" centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Add New UPI</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="setting-item">
+              <Row className="g-2 align-items-center">
+                <Col md>
+                  <h6>Name</h6>
+                </Col>
+                <Col md>
+                  <Form.Control name="Name" onChange={onChangeHandlerupi} type="text" placeholder='Name of UPI'/>
+                </Col>
+              </Row>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleUpiClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={onSubmitHandlerupi}>
               Save Changes
             </Button>
           </Modal.Footer>

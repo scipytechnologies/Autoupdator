@@ -29,6 +29,7 @@ function SalesAndBilling() {
   const navigate = useNavigate()
   // const [user, setUser] = useState("")
   const [data, setData] = useState([])
+  const salesData = useSelector((state) => state.pumpstore.SalesAndBilling)
 
   useEffect(() => {
     setData(pump.SalesAndBilling)
@@ -64,6 +65,7 @@ function SalesAndBilling() {
     setCreditors(res.data.result2.Otherpayment)
     setCash(res.data.result2.Dinomination)
     console.log(res.data.result2)
+    setData(salesData)
   }
   function handleClose() {
     setShow(false)
@@ -110,7 +112,7 @@ function SalesAndBilling() {
           <Card.Body>
             <Grid
               data={
-                data !== undefined
+                salesData
                   ? data.map((item) => [
                       item.Date,
                       item.Employee,

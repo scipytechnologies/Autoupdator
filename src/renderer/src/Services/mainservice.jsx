@@ -206,6 +206,32 @@ async function deleteFuel(pumpid,id) {
   const response = await apicall.apicall('delete',9000,`pump/deleteFuel/${pumpid}/${id}`)
   return response
 }
+///////////////////////////////{Card}///////////////////////////////////////////
+async function createCardPayment(data,id){
+  const response = await apicall.apicall('put',9000,`pump/createCardPayment/${id}`,data)
+  return response
+}
+////////////////////////////////{UPI}///////////////////////////////////////////
+async function createUPIPayment(data,id){
+  const response = await apicall.apicall('put',9000,`pump/createUPIPayment/${id}`,data)
+  return response
+}
+//////////////////////////////////{DailyReport}/////////////////////////////////////////////
+async function getPumpSalesOnDate(data,id){
+  const response = await apicall.apicall('get',9000,`DailyReport/getdailyByid/${id}`,data)
+  return response
+}
+///////////////////////////////////{MonthlyReport}////////////////////////////////////////////////
+async function getPumpSalesOnMonth(data,id){
+  const response = await apicall.apicall('get',9000,`MonthlyReport/getmonthlyByid/${id}`,data)
+  return response
+}
+////////////////////////////////{YearlyReport}////////////////////////////////////////////////
+async function getPumpSalesOnYear(data,id){
+  const response = await apicall.apicall('get',9000,`YearlyReport/getyearlyByid/${id}`,data)
+  return response
+}
+
 
 
 export default {
@@ -220,5 +246,5 @@ export default {
   PostEmployee,getCustomer,getEmployee,getInventoryManagement,getProduct,getSalesAndBilling,getDipStock,getPump,updateEmployee,getEmployeeById,
   deleteEmployee,createCustomer,getCustomerById,updateCustomer,deleteCustomer,createInventoryManagement,getInventoryManagementById,updateInventoryManagement,deleteInventoryManagement,
   createProduct,getProductById,updateProduct,deleteProduct,createSalesAndBilling,getSalesAndBillingById,updateSalesAndBilling,deleteSalesAndBilling,createDipStock,
-  getDipStockById,updateDipStock,deleteDipStock,createPump,getPumpById,updatePump,createFuel,deletePump
+  getDipStockById,updateDipStock,deleteDipStock,createPump,getPumpById,updatePump,createFuel,deletePump,createCardPayment,createUPIPayment,getPumpSalesOnDate,getPumpSalesOnMonth,getPumpSalesOnYear
 }
