@@ -14,12 +14,10 @@ function StockDetails() {
     const navigate = useNavigate()
     const [user, setUser] = useState("")
     const [data, setData] = useState([])
-
+    const dipstockData = useSelector((state) => state.pumpstore.DipStock)
 
     async function getDipStock() {
-        const res = await mainservice.getDipStock();
-        console.log(res.data.result1)
-        setData(res.data.result1)
+        setData(dipstockData)
     }
     useEffect(() => {
         getDipStock()
@@ -64,10 +62,9 @@ function StockDetails() {
                 <Card>
                     <Card.Body>
                         <Grid
-                            data={data !== undefined ? data.map((item) => [
-                                item.Date,
-                                item.InvoiceNumber,
-                                item.VehicleNumber,
+                            data={dipstockData.map((item) => [
+                                item._id,
+                                item.DipstockName,
                                 _(
                                     <>
                                         <ButtonGroup>
@@ -93,9 +90,8 @@ function StockDetails() {
 
                                 )
                             ])
-                                : []
                             }
-                            columns={['Date', 'Invoice Number', 'Vehicle Number', 'Action']}
+                            columns={['Id','Dipstock Name', 'Action']}
                             search={true}
                             pagination={true}
                             sort={true}

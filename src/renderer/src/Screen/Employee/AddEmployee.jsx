@@ -20,6 +20,7 @@ export default function PostEmployee() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
   const user = useSelector((state) => state.loginedUser)
+  const employeeData = useSelector((state) => state.pumpstore.Employee)
   const switchSkin = (skin) => {
     if (skin === 'dark') {
       const btnWhite = document.getElementsByClassName('btn-white')
@@ -87,9 +88,9 @@ export default function PostEmployee() {
   const CheckEdit = async () => {
     if (id) {
       setEditMode(true)
-      const res = await mainservice.getEmployeeById(id);
-      setUform(res.data.result2)
-      console.log(res.data.result2, "this");
+      const res = await mainservice.getEmployeeById();
+      setUform(employeeData)
+      console.log(employeeData, "this");
     }
   }
   useEffect(() => {
