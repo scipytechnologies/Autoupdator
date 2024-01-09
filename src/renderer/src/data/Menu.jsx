@@ -7,24 +7,108 @@ const Menu = [
     "icon": "ri-home-8-line"
   },
   {
-    "label": "Tank",
-    "link": "dashboard/tank",
-    "icon": "ri-pie-chart-2-line"
+    "label": "Customers",
+    "icon": "ri-group-line",
+    "submenu": [
+      {
+        "label": "Add Customers",
+        "link": "/pages/profile"
+      },
+      {
+        "label": "View Customers",
+        "link": "/pages/people"
+      },
+      {
+        "label": "Credit History",
+        "link": "/pages/activity"
+      }
+    ]
   },
   {
-    "label": "TankDetails",
-    "link": "dashboard/Tank/TankDetails",
-    "icon": "ri-pie-chart-2-line"
+    "label": "Manage Tank",
+    "icon": "ri-database-2-line",
+    "submenu": [
+      {
+        "label": "View Tanks",
+        "link": "dashboard/tank"
+      },
+      {
+        "label": "Add DipStock",
+        "link": "dashboard/dipStock"
+      },
+      {
+        "label": "DipStock History",
+        "link": "dashboard/DipStock/StockDetails"
+      }
+    ]
   },
   {
-    "label": "Dip Stock",
-    "link": "dashboard/dipStock",
-    "icon": "ri-pie-chart-2-line"
+    "label": "Fuel Sales",
+    "icon": "ri-gas-station-line",
+    "submenu": [
+      {
+        "label": "Add Sales",
+        "link": "dashboard/addSales"
+      },
+      {
+        "label": "View Sales",
+        "link": "dashboard/Sales/SalesDetails"
+      },
+      {
+        "label": "Report",
+        "link": "/pages/activity"
+      }
+    ]
   },
   {
-    "label": "Stock Details",
-    "link": "dashboard/DipStock/StockDetails",
-    "icon": "ri-pie-chart-2-line"
+    "label": "Employees",
+    "icon": "ri-team-line",
+    "submenu": [
+      {
+        "label": "Add Employee",
+        "link": "/pages/profile"
+      },
+      {
+        "label": "View Employee",
+        "link": "/pages/people"
+      },
+    ]
+  },
+  {
+    "label": "Inventory",
+    "icon": "ri-archive-line",
+    "submenu": [
+      {
+        "label": "Add Inventory",
+        "link": "/pages/profile"
+      },
+      {
+        "label": "Manage Stock",
+        "link": "/pages/people"
+      }
+    ]
+  },
+  {
+    "label": "Store",
+    "icon": "ri-store-line",
+    "submenu": [
+      {
+        "label": "Add Sales",
+        "link": "/pages/profile"
+      },
+      {
+        "label": "Add Product",
+        "link": "/pages/profile"
+      },
+      {
+        "label": "View Sales",
+        "link": "/pages/people"
+      },
+      {
+        "label": "Report",
+        "link": "/pages/activity"
+      }
+    ]
   },
   {
     "label": "Add Employee",
@@ -45,16 +129,6 @@ const Menu = [
     "label" : "Customer Details",
     "link" : "dashboard/Customer/CustomerDetails",
     "icon" : "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Add Sales",
-    "link": "dashboard/addSales",
-    "icon": "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Sales Details",
-    "link": "dashboard/Sales/SalesDetails",
-    "icon": "ri-pie-chart-2-line"
   },
   {
     "label": "Category",
