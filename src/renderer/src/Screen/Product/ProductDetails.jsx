@@ -15,6 +15,7 @@ function ProductDetails () {
     const [user, setUser] = useState("")
     const [data, setData] = useState([])
     const productData = useSelector((state) => state.pumpstore.Product)
+    console.log("data",productData)
 
     async function getProduct() {
         setData(productData)
@@ -23,20 +24,20 @@ function ProductDetails () {
         getProduct()
     }, [])
 
-    async function deleteProduct(id){
-        const res = await mainservice.deleteProduct(id)
+    async function deleteProduct(ProductId){
+        const res = await mainservice.deleteProduct(ProductId)
         if(res.data != null){
             console.log("deleted");
             getProduct()
         }
         else{
             console.log(res.message)
-        }
+        }   
     }
 
     const onDeleteHandler = (item) => {
-        console.log(item._id);
-        deleteProduct(item._id)
+        console.log("pro",item.ProductId);
+        deleteProduct(item.ProductId)
 
     }
 
@@ -74,7 +75,7 @@ function ProductDetails () {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                        <Dropdown.Item onClick={() => navigate(`/dashboard/addProduct/?id=${item._id}`)}>Edit</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(`/dashboard/addProduct/?id=${item.ProductId}`)}>Edit</Dropdown.Item>
                                         <Dropdown.Item style={{ color: "red" }} onClick={() => onDeleteHandler(item)}>Delete</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>

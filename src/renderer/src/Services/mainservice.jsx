@@ -34,8 +34,8 @@ async function PostEmployee(data,id) {
 }
 
 ////////////////////////////////{Customer}//////////////////////////////////////////
-async function createCustomer(data) {
-  const response = await apicall.apicall('post',9000,'customer/createemployee',data)
+async function createCustomer(data,id) {
+  const response = await apicall.apicall('post',9000,`customer/createcustomer/${id}`,data)
   return response
 }
 async function getCustomer() {
@@ -53,8 +53,8 @@ async function updateCustomer(id,data) {
   return response
 }
 
-async function deleteCustomer(id) {
-  const response = await apicall.apicall('delete',9000,`customer/deletecustomer/${id}`)
+async function deleteCustomer(pumpId,customerId) {
+  const response = await apicall.apicall('delete',9000,`customer/deletecustomer/${pumpId}/${customerId}`)
   return response
 }
 //////////////////////////{Employee}////////////////////////////////
