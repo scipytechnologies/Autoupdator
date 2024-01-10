@@ -12,11 +12,11 @@ const Menu = [
     "submenu": [
       {
         "label": "Add Customers",
-        "link": "/pages/profile"
+        "link": "dashboard/addCustomer"
       },
       {
         "label": "View Customers",
-        "link": "/pages/people"
+        "link": "dashboard/Customer/CustomerDetails"
       },
       {
         "label": "Credit History",
@@ -66,11 +66,11 @@ const Menu = [
     "submenu": [
       {
         "label": "Add Employee",
-        "link": "/pages/profile"
+        "link": "dashboard/addEmployee"
       },
       {
         "label": "View Employee",
-        "link": "/pages/people"
+        "link": "dashboard/Employee/EmployeeDetails"
       },
     ]
   },
@@ -80,11 +80,11 @@ const Menu = [
     "submenu": [
       {
         "label": "Add Inventory",
-        "link": "/pages/profile"
+        "link": "dashboard/addinventory"
       },
       {
         "label": "Manage Stock",
-        "link": "/pages/people"
+        "link": "dashboard/Inventory/InventoryDetails"
       }
     ]
   },
@@ -94,67 +94,26 @@ const Menu = [
     "submenu": [
       {
         "label": "Add Sales",
-        "link": "/pages/profile"
-      },
-      {
-        "label": "Add Product",
-        "link": "/pages/profile"
+        "link": "/pages/people"
       },
       {
         "label": "View Sales",
         "link": "/pages/people"
       },
       {
+        "label": "Add Product",
+        "link": "dashboard/category"
+      },
+      {
+        "label": "View Product",
+        "link": "dashboard/Product/ProductDetails"
+      },
+      {
         "label": "Report",
         "link": "/pages/activity"
       }
     ]
-  },
-  {
-    "label": "Add Employee",
-    "link": "dashboard/addEmployee",
-    "icon": "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Employee Details",
-    "link" : "dashboard/Employee/EmployeeDetails",
-    "icon" : "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Add Customer",
-    "link": "dashboard/addCustomer",
-    "icon": "ri-pie-chart-2-line"
-  },
-  {
-    "label" : "Customer Details",
-    "link" : "dashboard/Customer/CustomerDetails",
-    "icon" : "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Category",
-    "link": "dashboard/category",
-    "icon": "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Add Product",
-    "link": "dashboard/addProduct",
-    "icon": "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Product Details",
-    "link": "dashboard/Product/ProductDetails",
-    "icon": "ri-pie-chart-2-line"
-  },
-  {
-    "label": "Add Inventory",
-    "link": "dashboard/addinventory",
-    "icon": "ri-pie-chart-2-line"
-  },
-  {
-    "label" : "Inventory Details",
-    "link" : "dashboard/Inventory/InventoryDetails",
-    "icon" : "ri-pie-chart-2-line"
-  },
+  }
 ];
 const dashboardMenu = [
   {
