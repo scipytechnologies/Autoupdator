@@ -14,7 +14,11 @@ function CustomerDetails() {
     const navigate = useNavigate()
     const [user, setUser] = useState("")
     const [data, setData] = useState([])
+    const pumpId = useSelector((state)=> state.loginedUser.PumpId)
     const customerData = useSelector((state) => state.pumpstore.Customer)
+    console.log("data", customerData)
+    console.log("pumpof",pumpId)
+
 
 
     async function getCustomer() {
@@ -24,20 +28,26 @@ function CustomerDetails() {
         getCustomer()
     }, []);
 
-    async function deleteCustomer(id) {
-        const res = await mainservice.deleteCustomer(id);
-        if (res.data != null) {
-            console.log("deleted");
-            getCustomer()
+    async function deleteCustomer(pumpId,customerId) {
+        try {
+            const res = await mainservice.deleteCustomer(pumpId,customerId);
+            if (res.data != null) {
+                console.log("deleted");
+                getCustomer()
+            }
+            else {
+                console.log("Deletion failed. Server response:", res);
+            }
         }
-        else {
-            console.log(res.message);
+        catch (error) {
+            console.log("An error is occurred in deletion", error)
         }
     }
 
     const onDeleteHandler = (item) => {
-        console.log(item._id);
-        deleteCustomer(item._id);
+        const customerId = item.CustomerId;
+        console.log("customerId", customerId);
+        deleteCustomer(pumpId,customerId);
     }
 
     return (
@@ -80,7 +90,7 @@ function CustomerDetails() {
 
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                                        <Dropdown.Item onClick={() => navigate(`/dashboard/addCustomer/?id=${ item._id }`)}>Edit</Dropdown.Item>
+                                                        <Dropdown.Item onClick={() => navigate(`/dashboard/addCustomer/?id=${item.CustomerId}`)}>Edit</Dropdown.Item>
                                                         <Dropdown.Item style={{ color: 'red' }} onClick={() => onDeleteHandler(item)}>Delete</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
