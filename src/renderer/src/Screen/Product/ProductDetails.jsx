@@ -24,8 +24,8 @@ function ProductDetails () {
         getProduct()
     }, [])
 
-    async function deleteProduct(ProductId){
-        const res = await mainservice.deleteProduct(ProductId)
+    async function deleteProduct(productId){
+        const res = await mainservice.deleteProduct(productId)
         if(res.data != null){
             console.log("deleted");
             getProduct()
@@ -36,8 +36,11 @@ function ProductDetails () {
     }
 
     const onDeleteHandler = (item) => {
-        console.log("pro",item.ProductId);
-        deleteProduct(item.ProductId)
+        console.log("categoryId",categoryId)
+        const categoryId = item._id
+        const productId = item.ProductId
+        console.log("productId",productId)
+        deleteProduct(productId)
 
     }
 

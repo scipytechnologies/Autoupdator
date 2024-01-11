@@ -96,6 +96,7 @@ export default function PostProduct() {
   let [searchParams, setSearchParams] = useSearchParams();
   const [uform, setUform] = useState({});
   console.log(uform, "productuform")
+  console.log("uformpro",uform._id)
   const [editMode, setEditMode] = useState(false);
   const id = searchParams.get("id");
   console.log(id,"search")

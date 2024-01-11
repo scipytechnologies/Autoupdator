@@ -15,6 +15,7 @@ function InventoryDetails() {
     const [user, setUser] = useState("")
     const [data, setData] =  useState([])
     const inventoryData = useSelector((state) => state.pumpstore.InventoryManagement)
+    const pumpId = useSelector((state) => state.loginedUser.PumpId)
 
     async function getInventoryManagement() {
         setData(inventoryData)
@@ -23,8 +24,8 @@ function InventoryDetails() {
         getInventoryManagement()
     }, [])
 
-    async function deleteInventoryManagement(id) {
-        const res = await mainservice.deleteInventoryManagement(id);
+    async function deleteInventoryManagement(pumpId,inventoryId) {
+        const res = await mainservice.deleteInventoryManagement(pumpId,inventoryId);
         if(res.data != null) {
             console.log("deleted");
             getInventoryManagement()
@@ -35,8 +36,9 @@ function InventoryDetails() {
     }
 
     const onDeleteHandler = (item) => {
-        console.log(item._id);
-        deleteInventoryManagement(item._id);
+        const inventoryId = item.InventoryManagementId
+        console.log("invenId",inventoryId);
+        deleteInventoryManagement(pumpId,inventoryId);
     }
 
     return (
@@ -79,7 +81,7 @@ function InventoryDetails() {
 
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                                        <Dropdown.Item onClick={() => navigate(`/dashboard/addinventory/?id=${item._id}`)}>Edit</Dropdown.Item>
+                                                        <Dropdown.Item onClick={() => navigate(`/dashboard/addinventory/?id=${item.InventoryManagementId}`)}>Edit</Dropdown.Item>
                                                         <Dropdown.Item style={{ color: 'red' }} onClick={() => onDeleteHandler(item)}>Delete</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>

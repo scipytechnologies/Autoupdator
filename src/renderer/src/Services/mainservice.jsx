@@ -71,7 +71,7 @@ async function updateEmployee(id, data) {
 async function getEmployeeById(id) {
   const response = await apicall.apicall('get',9000,`employee/getemployeebyid/${id}`)
   return response
-}
+} 
 
 async function deleteEmployee(id) {
   const response = await apicall.apicall('delete',9000,`employee/deleteemployee/${id}`)
@@ -96,8 +96,8 @@ async function updateInventoryManagement(id,data) {
   return response
 }
 
-async function deleteInventoryManagement(id) {
-  const response = await apicall.apicall('delete',9000,`InventoryManagementRouter/deleteInventoryManagement/${id}`)
+async function deleteInventoryManagement(pumpId,inventoryId) {
+  const response = await apicall.apicall('delete',9000,`InventoryManagementRouter/deleteInventoryManagement/${pumpId}/${inventoryId}`)
   return response
 }
 ///////////////////////{Product}////////////////////////////////////////
@@ -120,8 +120,8 @@ async function updateProduct(id, data) {
   return response
 }
 
-async function deleteProduct(id) {
-  const response = await apicall.apicall('delete',9000,`ProductRouter/deleteProduct/${id}`)
+async function deleteProduct(categoryId,id   ) {
+  const response = await apicall.apicall('delete',9000,`ProductRouter/deleteProduct/${categoryId}/${id}`)
   return response
 }
 //////////////////////////////{Sales}////////////////////////////////////////
