@@ -89,9 +89,9 @@ export default function PostEmployee() {
   const CheckEdit = async () => {
     if (id) {
       setEditMode(true)
-      const res = await mainservice.getEmployeeById()
-      setUform(employeeData)
-      console.log(employeeData, 'this')
+      const res = await mainservice.getEmployeeById(id)
+      setUform(res.data.result2)
+      console.log(res.data.result2, 'this')
     }
   }
   useEffect(() => {
