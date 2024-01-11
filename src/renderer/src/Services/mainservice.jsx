@@ -82,8 +82,8 @@ async function getInventoryManagement() {
   const response = await apicall.apicall('get',9000,'InventoryManagementRouter/getInventoryManagement')
   return response
 }
-async function createInventoryManagement(data) {
-  const response = await apicall.apicall('post',9000,'InventoryManagementRouter/createInventoryManagement',data)
+async function createInventoryManagement(data,id) {
+  const response = await apicall.apicall('post',9000,`InventoryManagementRouter/createInventoryManagement/${id}`,data)
   return response
 }
 async function getInventoryManagementById(id) {
