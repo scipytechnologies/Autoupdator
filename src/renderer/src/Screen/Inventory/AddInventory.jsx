@@ -10,6 +10,7 @@ import mainservice from '../../Services/mainservice'
 export default function PostInventory() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
+  const user = useSelector((state) => state.loginedUser)
 
   const switchSkin = (skin) => {
     if (skin === 'dark') {
@@ -93,6 +94,7 @@ export default function PostInventory() {
     event.preventDefault()
     console.log(form);
     const res = await mainservice.createInventoryManagement(form, user.PumpId)
+    console.log("pumpid",user.PumpId)
     if (res.data != null) {
       console.log(res.data)
     } else {
@@ -157,7 +159,7 @@ export default function PostInventory() {
 
         <Card className="card-settings">
           <Card.Header>
-            <Card.Title>Create a New Employee</Card.Title>
+            <Card.Title>Create a New Inventory</Card.Title>
             <Card.Text>short Description</Card.Text>
           </Card.Header>
           <Card.Body className="p-0">
@@ -189,7 +191,7 @@ export default function PostInventory() {
                   <h6>Category</h6>
                 </Col>
                 <Col md>
-                  <Form.Control type="text" name="ItemCategory" value={uform.Price} placeholder="eg.100-25484" onChange={onChangeHandler} />
+                  <Form.Control type="text" name="ItemCategory" value={uform.ItemCategory} placeholder="eg.100-25484" onChange={onChangeHandler} />
                 </Col>
               </Row>
             </div>
