@@ -26,8 +26,8 @@ function EmployeeDetails() {
     getEmployee()
   }, [])
 
-  async function deleteEmployee(EmployeeId) {
-    const res = await mainservice.deleteEmployee(EmployeeId)
+  async function deleteEmployee(pumpId,employeeId) {
+    const res = await mainservice.deleteEmployee(pumpId,employeeId)
     if (res.data != null) {
       console.log('deleted')
       getEmployee()
@@ -37,8 +37,11 @@ function EmployeeDetails() {
   }
 
   const onDeleteHandler = (item) => {
-    console.log(item._EmployeeId)
-    deleteEmployee(item._EmployeeId)
+    const pumpId = user.PumpId;
+    console.log("pumpid",pumpId)
+    const employeeId = item.EmployeeId
+    console.log("employeeId",employeeId)
+    deleteEmployee(pumpId,employeeId)
   }
 
   const [show, setShow] = useState(false)
@@ -253,7 +256,7 @@ function EmployeeDetails() {
                           <Dropdown.Menu>
                             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() => navigate(`/dashboard/addEmployee/?id=${item._id}`)}
+                              onClick={() => navigate(`/dashboard/addEmployee/?id=${item.EmployeeId}`)}
                             >
                               Edit
                             </Dropdown.Item>

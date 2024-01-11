@@ -73,8 +73,8 @@ async function getEmployeeById(id) {
   return response
 } 
 
-async function deleteEmployee(id) {
-  const response = await apicall.apicall('delete',9000,`employee/deleteemployee/${id}`)
+async function deleteEmployee(pumpId,employeeId) {
+  const response = await apicall.apicall('delete',9000,`employee/deleteemployee/${pumpId}/${employeeId}`)
   return response
 }
 /////////////////////{inventory}//////////////////////////////////
