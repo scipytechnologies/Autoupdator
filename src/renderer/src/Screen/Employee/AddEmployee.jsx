@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+
 import { Col, Row, Form, Nav, Card, Button, Table } from 'react-bootstrap'
 import Footer from '../../layouts/Footer'
 import { useSearchParams } from 'react-router-dom'
@@ -15,6 +15,7 @@ import Header from '../../layouts/Header'
 import mainservice from '../../Services/mainservice'
 import { useSelector, useDispatch } from 'react-redux'
 import { event } from 'jquery'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function PostEmployee() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
@@ -40,7 +41,7 @@ export default function PostEmployee() {
   }
   const [form, setform] = useState({})
   const onChangeHandler = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     setform({
       ...form,
       [event.target.name]: event.target.value
@@ -48,15 +49,16 @@ export default function PostEmployee() {
     setUform({
       ...uform,
       [event.target.name]: event.target.value
-    });
-    console.log(uform);
+    })
+    console.log(uform)
   }
+  const navigate = useNavigate()
   const onSubmitHandler = async (event) => {
     event.preventDefault()
-    console.log(form);
+    console.log(form)
     const res = await mainservice.PostEmployee(form, user.PumpId)
     if (res.data != null) {
-      console.log(res.data)
+      navigate('/dashboard/Employee/EmployeeDetails')
     } else {
       console.log(res)
     }
@@ -70,32 +72,31 @@ export default function PostEmployee() {
 
   async function updateEmployee(uform) {
     const res = await mainservice.updateEmployee(id, uform)
-    console.log("updateId", id)
+    console.log('updateId', id)
     if (res.data != null) {
-      console.log(res.data, "Employee Details Updated")
-    }
-    else {
+      console.log(res.data, 'Employee Details Updated')
+    } else {
       console.log(res.data)
     }
-  } 
+  }
 
-  let [searchParams, setSearchParams] = useSearchParams();
-  const [uform, setUform] = useState([]);
-  console.log(uform, "uformresult2details")
+  let [searchParams, setSearchParams] = useSearchParams()
+  const [uform, setUform] = useState([])
+  console.log(uform, 'uformresult2details')
   // console.log(uform?.result2?.AadhaarId, "individual")
-  const [editMode, setEditMode] = useState(false);
-  const id = searchParams.get("id");
+  const [editMode, setEditMode] = useState(false)
+  const id = searchParams.get('id')
   const CheckEdit = async () => {
     if (id) {
       setEditMode(true)
-      const res = await mainservice.getEmployeeById();
+      const res = await mainservice.getEmployeeById()
       setUform(employeeData)
-      console.log(employeeData, "this");
+      console.log(employeeData, 'this')
     }
   }
   useEffect(() => {
     CheckEdit()
-  }, []);
+  }, [])
 
   switchSkin(skin)
   useEffect(() => {
@@ -154,7 +155,12 @@ export default function PostEmployee() {
                   <h6>Date of Birth</h6>
                 </Col>
                 <Col md>
-                  <Form.Control name="DOB" value={uform.DOB} onChange={onChangeHandler} type="Date" />
+                  <Form.Control
+                    name="DOB"
+                    value={uform.DOB}
+                    onChange={onChangeHandler}
+                    type="Date"
+                  />
                 </Col>
               </Row>
             </div>
@@ -412,14 +418,19 @@ export default function PostEmployee() {
             <div className="setting-item d-flex justify-content-end">
               {' '}
               <Col xs="12">
-                {editMode ?
+                {editMode ? (
                   <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button onClick={onUpdateHandler} type="submit">Update</Button>
-                  </div> :
+                    <Button onClick={onUpdateHandler} type="submit">
+                      Update
+                    </Button>
+                  </div>
+                ) : (
                   <div className="mt-1" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button onClick={onSubmitHandler} type="submit">Submit</Button>
-                  </div>}
-
+                    <Button onClick={onSubmitHandler} type="submit">
+                      Submit
+                    </Button>
+                  </div>
+                )}
               </Col>{' '}
             </div>
           </Card.Body>
