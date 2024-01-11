@@ -221,7 +221,7 @@ export default function Home() {
         filter: { type: 'none' }
       }
     },
-    colors: ['#506fd9', '#e5e9f2'],
+    colors: ['#01a174', '#e5e9f2'],
     grid: {
       padding: {
         bottom: 10,
@@ -400,11 +400,13 @@ export default function Home() {
 
   const seriesEight = [{
     type: 'column',
-    data: [[0, 2], [1, 3], [2, 5], [3, 7], [4, 12], [5, 17], [6, 10], [7, 14], [8, 15], [9, 12], [10, 8]]
-  }, {
+    data: [[0, 100000], [1, 125662], [2, 5], [3, 7], [4, 12], [5, 17], [6, 10], [7, 14], [8, 15], [9, 12], [10, 8],[11, 1], [12, 3],[13, 7], [14, 12], [15, 17], [16, 10], [17, 14], [18, 15], [19, 12], [20, 8],[11, 1], [22, 3],[23, 7], [24, 12], [25, 17], [26, 10], [27, 14], [28, 15], [29, 12], [30, 8],[31,25]]
+  },
+  {
     type: 'column',
-    data: [[0, 12], [1, 7], [2, 4], [3, 5], [4, 8], [5, 10], [6, 4], [7, 7], [8, 11], [9, 9], [10, 5]]
-  }];
+    data: [[0, 33200], [1, 32562], [2, 5], [3, 7], [4, 12], [5, 17], [6, 10], [7, 14], [8, 15], [9, 12], [10, 8],[11, 1], [12, 3],[13, 7], [14, 12], [15, 17], [16, 10], [17, 14], [18, 15], [19, 12], [20, 8],[11, 1], [22, 3],[23, 7], [24, 12], [25, 17], [26, 10], [27, 14], [28, 15], [29, 12], [30, 8],[31,25]]
+  }
+];
 
   const optionEight = {
     chart: {
@@ -429,7 +431,7 @@ export default function Home() {
         filter: { type: 'none' }
       }
     },
-    colors: ['#506fd9', '#e5e9f2'],
+    colors: ['#01a174', '#e5e9f2'],
     plotOptions: {
       bar: {
         columnWidth: '40%',
@@ -443,7 +445,7 @@ export default function Home() {
     },
     yaxis: {
       min: 0,
-      max: 30,
+      max: 200000,
       tickAmount: 5
     },
     xaxis: {
@@ -510,7 +512,6 @@ export default function Home() {
               <li className="breadcrumb-item"><Link to="#">Dashboard</Link></li>
               <li className="breadcrumb-item active" aria-current="page">Home</li>
             </ol>
-            <h4 className="main-title mb-0">Welcome {user.firstName} {user.lastName} to {pump.PumpName}</h4>
           </div>
           <div className="d-flex gap-2 mt-3 mt-md-0">
             <Button variant="" className="btn-white d-flex align-items-center gap-2">
@@ -526,347 +527,64 @@ export default function Home() {
         </div>
 
         <Row className="g-3">
-          {/* <Col xl="9">
-            <Card className="card-one">
-              <Card.Body className="overflow-hidden px-0 pb-3">
-                <div className="finance-info p-3 p-xl-4">
-                  <label className="fs-sm fw-medium mb-2 mb-xl-1">Profit This Year</label>
-                  <h1 className="finance-value"><span>$</span>867,036.50 <span>USD</span></h1>
-
-                  <h4 className="finance-subvalue mb-3 mb-md-2">
-                    <i className="ri-arrow-up-line text-primary"></i>
-                    <span className="text-primary">38.63%</span>
-                    <small>vs last year</small>
-                  </h4>
-
-                  <p className="w-50 fs-sm mb-2 mb-xl-4 d-none d-sm-block">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore...</p>
-
-                  <Row className="row-cols-auto g-3 g-xl-4 pt-2">
-                    {[
-                      {
-                        "amount": "30,342.15",
-                        "quarter": "First",
-                        "percent": "2.3",
-                        "status": "success"
-                      }, {
-                        "amount": "48,036.90",
-                        "quarter": "Second",
-                        "percent": "6.8",
-                        "status": "success"
-                      }, {
-                        "amount": "68,156.00",
-                        "quarter": "Third",
-                        "percent": "10.5",
-                        "status": "success"
-                      }, {
-                        "amount": "64,896.65",
-                        "quarter": "Fourth",
-                        "percent": "0.8",
-                        "status": "danger"
-                      }
-                    ].map((item, index) => (
-                      <Col key={index}>
-                        <h6 className="card-value fs-15 mb-1">${item.amount} USD</h6>
-                        <span className="fs-sm fw-medium text-secondary d-block mb-1">{item.quarter} Quarter</span>
-                        <span className={"fs-xs d-flex align-items-center ff-numerals text-" + item.status}>{item.percent}% <i className={((item.status === "success") ? "ri-arrow-up-line" : "ri-arrow-down-line") + " fs-15 lh-3"}></i></span>
-                      </Col>
-                    ))}
-                  </Row>
-
-                </div>
-
-                <Nav as="nav" className="nav-finance-one p-3 p-xl-4">
-                  <Link href="" className="active">2023</Link>
-                  <Link href="">2022</Link>
-                  <Link href="">2021</Link>
-                </Nav>
-
-                <ReactApexChart series={seriesOne} options={optionOne} type="area" height={430} className="apex-chart-two" />
-              </Card.Body>
-            </Card>
-
-          </Col>
-          <Col xl="3">
-            <Row className="g-3">
-              <Col sm="6" xl="12">
-                <Card className="card-one">
-                  <Card.Body className="overflow-hidden">
-                    <h2 className="card-value mb-1">75<span>%</span></h2>
-                    <h6 className="text-dark fw-semibold mb-1">Gross Profit Margin</h6>
-                    <p className="fs-xs text-secondary mb-0 lh-4">The gross profit you make on each dollar of sales.</p>
-
-                    <ReactApexChart series={seriesTwo} options={optionTwo} height={100} className="apex-chart-three" />
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col sm="6" xl="12">
-                <Card className="card-one">
-                  <Card.Body>
-                    <h2 className="card-value mb-1">68<span>%</span></h2>
-                    <h6 className="text-dark fw-semibold mb-1">Net Profit Margin</h6>
-                    <p className="fs-xs text-secondary mb-0 lh-4">Measures your business at generating profit sales.</p>
-
-                    <ReactApexChart series={seriesThree} options={optionThree} height={100} className="apex-chart-three" />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-          <Col sm="6" xl>
-            <Card className="card-one">
-              <Card.Body>
-                <ReactApexChart series={seriesFour} options={optionFour} height={120} type="line" className="mb-1" />
-                <h3 className="card-value">0.9:8</h3>
-                <ProgressBar now={50} className="ht-5 mb-2" />
-                <label className="fw-semibold text-dark mb-1">Quick Ratio Goal: 1.0 or higher</label>
-                <p className="fs-sm text-secondary mb-0">Measures your Accounts Receivable / Current Liabilities</p>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col sm="6" xl>
-            <Card className="card-one">
-              <Card.Body>
-                <ReactApexChart series={seriesFive} options={optionFive} height={120} type="line" className="mb-1" />
-                <h3 className="card-value">2.8:0</h3>
-                <ProgressBar now={75} variant="ui-02" className="ht-5 mb-2" />
-                <label className="fw-semibold text-dark mb-1">Quick Ratio Goal: 2.0 or higher</label>
-                <p className="fs-sm text-secondary mb-0">Measures your Current Assets / Current Liabilities</p>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md="7" xl="5">
-            <Card className="card-one card-wallet">
-              <Card.Body>
-                <div className="finance-icon">
-                  <i className="ri-mastercard-fill"></i>
-                  <i className="ri-visa-line"></i>
-                </div>
-                <label className="card-title mb-1">Available Balance</label>
-                <h2 className="card-value mb-auto"><span>$</span>130,058.50</h2>
-
-                <label className="card-title mb-1">Account Number</label>
-                <div className="d-flex align-items-center gap-4 mb-3">
-                  <div className="d-flex gap-1">
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                  </div>
-                  <div className="d-flex gap-1">
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                  </div>
-                  <div className="d-flex gap-1">
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                    <span className="badge-dot"></span>
-                  </div>
-                  <h5 className="ff-numerals mb-0">5314</h5>
-                </div>
-
-                <label className="card-title mb-1">Account Name</label>
-                <h5 className="mb-0">Richard M. Christensen</h5>
-              </Card.Body>
-              <ReactApexChart series={seriesSix} options={optionSix} height={268} type="area" className="apex-chart-two" />
-            </Card>
-          </Col>
-          <Col md="5" xl="6">
-            <Card className="card-one">
-              <Card.Header>
-                <Card.Title as="h6">Income &amp; Expenses</Card.Title>
-                <Nav className="nav-icon nav-icon-sm ms-auto">
-                  <Nav.Link href=""><i className="ri-refresh-line"></i></Nav.Link>
-                  <Nav.Link href=""><i className="ri-more-2-fill"></i></Nav.Link>
-                </Nav>
-              </Card.Header>
-              <Card.Body className="pb-4">
-                <ReactApexChart series={seriesSeven} options={optionSeven} height={200} type="bar" />
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xl="6">
-            <Card className="card-one">
-              <Card.Header className="border-0 pb-2">
-                <Card.Title as="h6">Profit Margin (%)</Card.Title>
-                <Nav className="nav-icon nav-icon-sm ms-auto">
-                  <Nav.Link href=""><i className="ri-refresh-line"></i></Nav.Link>
-                  <Nav.Link href=""><i className="ri-more-2-fill"></i></Nav.Link>
-                </Nav>
-              </Card.Header>
-              <Card.Body className="pt-0">
-                <p className="fs-sm text-secondary mb-4">Profit margin is a measure of profitability. It is calculated by finding the profit as a percentage of the revenue.</p>
-
-                <ProgressBar className="progress-finance mb-4">
-                  <ProgressBar now={29.7} label="29.7%" />
-                  <ProgressBar now={52.8} label="52.8%" />
-                  <ProgressBar now={18.3} label="18.3%" />
-                </ProgressBar>
-
-                <Row className="g-3">
-                  <Col>
-                    <label className="card-label fs-sm fw-medium mb-1">Gross Profit</label>
-                    <h2 className="card-value mb-0">29.7%</h2>
-                  </Col>
-                  <Col xs="5" sm>
-                    <label className="card-label fs-sm fw-medium mb-1">Operating Profit</label>
-                    <h2 className="card-value mb-0">52.8%</h2>
-                  </Col>
-                  <Col>
-                    <label className="card-label fs-sm fw-medium mb-1">Net Profit</label>
-                    <h2 className="card-value mb-0">18.3%</h2>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xl="8">
-            <Card className="card-one">
-              <Card.Header>
-                <Card.Title as="h6">Expense Analytics</Card.Title>
-                <Nav className="nav-icon nav-icon-sm ms-auto">
-                  <Nav.Link href=""><i className="ri-refresh-line"></i></Nav.Link>
-                  <Nav.Link href=""><i className="ri-more-2-fill"></i></Nav.Link>
-                </Nav>
-              </Card.Header>
-              <Card.Body className="p-4">
-                <Row className="g-4">
-                  <Col md="6">
-                    <ReactApexChart series={seriesEight} options={optionEight} height={210} className="apex-chart-three" />
-                  </Col>
-                  <Col md="6">
-                    <div className="d-flex">
-                      <i className="ri-hotel-line fs-48 lh-1 me-3"></i>
-                      <div>
-                        <h6 className="fw-semibold text-dark mb-1">Fixed Expenses</h6>
-                        <p className="fs-sm text-secondary mb-0">Fixed expenses are generally fixed in both amount and interval.</p>
-                      </div>
-                    </div>
-                    <div className="d-flex mt-3">
-                      <i className="ri-wallet-3-line fs-48 lh-1 me-3"></i>
-                      <div>
-                        <h6 className="fw-semibold text-dark mb-1">Periodic Expenses</h6>
-                        <p className="fs-sm text-secondary mb-0">Periodic expenses are usually less frequent and the amount can vary.</p>
-                      </div>
-                    </div>
-                    <div className="d-flex mt-3">
-                      <i className="ri-shopping-bag-3-line fs-48 lh-1 me-3"></i>
-                      <div>
-                        <h6 className="fw-semibold text-dark mb-1">Variable Expenses</h6>
-                        <p className="fs-sm text-secondary mb-0">Change as the quantity of good or service that produces changes.</p>
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xl="4">
-            <Card className="card-one">
-              <Card.Header>
-                <Card.Title as="h6">Billed Opportunities</Card.Title>
-                <Nav className="nav-icon nav-icon-sm ms-auto">
-                  <Nav.Link href=""><i className="ri-refresh-line"></i></Nav.Link>
-                  <Nav.Link href=""><i className="ri-more-2-fill"></i></Nav.Link>
-                </Nav>
-              </Card.Header>
-              <Card.Body className="position-relative d-flex justify-content-center">
-                <ReactApexChart series={[35, 20, 20, 15]} options={optionDonut} height="auto" type="donut" className="apex-donut-two" />
-
-                <div className="finance-donut-value">
-                  <h1>1.8B</h1>
-                  <p>86.24%</p>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col> */}
           <Col>
             <Card className="card-one">
-              <Card.Body className="p-3 p-xl-4">
-                <Row className="justify-content-center g-3 mb-2 mb-xl-4">
-                  <Col xs="6" sm="4" md>
-                    <div className="finance-item">
-                      <div className="finance-item-circle">
-                        <h1>4.7B</h1>
-                        <label>Total Income</label>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col xs="6" sm="4" md>
-                    <div className="finance-item">
-                      <div className="finance-item-circle">
-                        <h1>60M</h1>
-                        <label>Total Expenses</label>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col xs="6" sm="4" md>
-                    <div className="finance-item">
-                      <div className="finance-item-circle bg-gray-400">
-                        <h1>2.1B</h1>
-                        <label>Net Profit</label>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col xs="6" sm="4" md>
-                    <div className="finance-item">
-                      <div className="finance-item-circle">
-                        <h1>18.2%</h1>
-                        <label>Quick Ratio</label>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col xs="6" sm="4" md>
-                    <div className="finance-item">
-                      <div className="finance-item-circle">
-                        <h1>6.8%</h1>
-                        <label>Current Ratio</label>
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-
-                <Row className="g-4 g-lg-5 pt-3">
-                  <Col sm="6" xl="3">
-                    <div className="d-flex">
-                      <i className="ri-wallet-2-line fs-32 lh-1 me-3"></i>
-                      <div>
-                        <h6 className="fw-semibold text-dark mb-2">Accounts Receivable</h6>
-                        <p className="fs-sm text-secondary mb-0">The proceeds or payment which the company will receive from its customers.</p>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col sm="6" xl="3">
-                    <div className="d-flex">
-                      <i className="ri-refund-2-line fs-32 lh-1 me-3"></i>
-                      <div>
-                        <h6 className="fw-semibold text-dark mb-2">Accounts Payable</h6>
-                        <p className="fs-sm text-secondary mb-0">Money owed by a business to its suppliers shown as a liability.</p>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col sm="6" xl="3">
-                    <div className="d-flex">
-                      <i className="ri-exchange-line fs-32 lh-1 me-3"></i>
-                      <div>
-                        <h6 className="fw-semibold text-dark mb-2">Quick Ratio</h6>
-                        <p className="fs-sm text-secondary mb-0">Measures the ability of a company to use its near cash or quick assets.</p>
-                      </div>
-                    </div>
-                  </Col>
-                  <Col sm="6" xl="3">
-                    <div className="d-flex">
-                      <i className="ri-exchange-dollar-line fs-32 lh-1 me-3"></i>
-                      <div>
-                        <h6 className="fw-semibold text-dark mb-2">Current Ratio</h6>
-                        <p className="fs-sm text-secondary mb-0">Measures whether a firm has enough resources to meet its short-term obligations.</p>
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
+              <Card.Body className="rounded bg-primary p-3 p-xl-4">
+              <h4 style={{color:'white'}} className="main-title mb-0">Welcome {user.firstName} {user.lastName} to {pump.PumpName} Management System</h4>
+              <p style={{color:'white',fontSize:'12px',paddingTop:'5px'}}> demo paragraph here</p>
               </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row className="g-3 mt-2">
+          <Col>
+            <Card className="card-one">
+              <Card.Body style={{minHeight:'210px'}} className="rounded p-3 p-xl-4">
+              <ReactApexChart series={seriesEight} options={optionEight} height={'100%'} className="apex-chart-three" />
+
+
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col>
+            <Card className="card-one">
+              <Card.Body className="rounded p-3 p-xl-4">
+                                <Row className="g-4 mb-2">
+                  {[
+                    {
+                      "name": "Tank 1",
+                      "value": "6,000",
+                      "percent": "40%",
+                      "progress": 60
+                    }, {
+                      "name": "Tank 2",
+                      "value": "3,750",
+                      "percent": "25%",
+                      "progress": 75,
+                      "variant": "ui-02"
+                    }, {
+                      "name": "Tank 3",
+                      "value": "3,000",
+                      "percent": "20%",
+                      "progress": 80,         
+                      "variant": "gray-700"
+                    }, {
+                      "name": "Tank 4",
+                      "value": "2,250",
+                      "percent": "15%",
+                      "progress": 85,
+                      "variant": "gray-500"
+                    }
+                  ].map((item, index) => (
+                    <Col xs="6" key={index}>
+                      <label className="fs-sm fw-medium mb-1">{item.name}</label>
+                      <h3 className="card-value mb-2">{item.value} <small>{item.percent}</small></h3>
+                      <ProgressBar now={item.progress} className="ht-5 mb-0" variant={item.variant} />
+                    </Col>
+                  ))}
+                </Row>
+                 </Card.Body>
             </Card>
           </Col>
         </Row>

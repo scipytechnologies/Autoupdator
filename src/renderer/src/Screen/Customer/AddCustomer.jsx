@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Col, Row, Form, Nav, Card, Button, Table } from 'react-bootstrap'
 import Footer from '../../layouts/Footer'
 import HeaderMobile from '../../layouts/HeaderMobile'
@@ -7,7 +6,7 @@ import Avatar from '../../components/Avatar'
 import { useSearchParams } from 'react-router-dom'
 import mainservice from '../../Services/mainservice'
 import { useSelector, useDispatch } from 'react-redux'
-
+import { Link, useNavigate } from "react-router-dom";
 import img8 from '../../assets/img/img8.jpg'
 import img9 from '../../assets/img/img9.jpg'
 import img10 from '../../assets/img/img10.jpg'
@@ -19,6 +18,7 @@ export default function PostCustomer() {
   const currentSkin = localStorage.getItem('skin-mode') ? 'dark' : ''
   const [skin, setSkin] = useState(currentSkin)
   const user = useSelector((state) => state.loginedUser)
+  const navigate = useNavigate()
   const switchSkin = (skin) => {
     if (skin === 'dark') {
       const btnWhite = document.getElementsByClassName('btn-white')
@@ -103,7 +103,7 @@ export default function PostCustomer() {
     console.log(form);
     const res = await mainservice.createCustomer(form, user.PumpId)
     if (res.data != null) {
-      console.log(res.data)
+      navigate('/dashboard/Customer/CustomerDetails')
     } else {
       console.log(res)
     }
@@ -119,7 +119,7 @@ export default function PostCustomer() {
     const res = await mainservice.updateCustomer(id, uform)
     console.log("updateId", id)
     if (res.data != null) {
-      console.log(res.data, "Customer Details Updated")
+      navigate('/dashboard/Customer/CustomerDetails')
     }
     else {
       console.log(res.data)
@@ -143,6 +143,8 @@ export default function PostCustomer() {
   useEffect(() => {
     CheckEdit()
   }, []);
+
+  
 
 
   switchSkin(skin)
