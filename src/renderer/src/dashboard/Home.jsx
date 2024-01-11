@@ -397,69 +397,90 @@ export default function Home() {
     legend: { show: false },
     tooltip: { enabled: false }
   }
+const generateDateSeries = (startDate, numberOfDays) => {
+  const dateSeries = [];
+  let currentDate = new Date(startDate);
 
-  const seriesEight = [{
+  for (let i = 0; i < numberOfDays; i++) {
+    dateSeries.push([currentDate.getTime(), Math.floor(Math.random() * 100000)]);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return dateSeries;
+};
+
+const startDate = '2024-02-01'; // Replace with your desired start date
+const numberOfDays = 31; // Adjust based on the number of days in your month
+
+const seriesEight = [
+  {
     type: 'column',
-    data: [[0, 100000], [1, 125662], [2, 5], [3, 7], [4, 12], [5, 17], [6, 10], [7, 14], [8, 15], [9, 12], [10, 8],[11, 1], [12, 3],[13, 7], [14, 12], [15, 17], [16, 10], [17, 14], [18, 15], [19, 12], [20, 8],[11, 1], [22, 3],[23, 7], [24, 12], [25, 17], [26, 10], [27, 14], [28, 15], [29, 12], [30, 8],[31,25]]
+    data: generateDateSeries(startDate, numberOfDays),
   },
   {
     type: 'column',
-    data: [[0, 33200], [1, 32562], [2, 5], [3, 7], [4, 12], [5, 17], [6, 10], [7, 14], [8, 15], [9, 12], [10, 8],[11, 1], [12, 3],[13, 7], [14, 12], [15, 17], [16, 10], [17, 14], [18, 15], [19, 12], [20, 8],[11, 1], [22, 3],[23, 7], [24, 12], [25, 17], [26, 10], [27, 14], [28, 15], [29, 12], [30, 8],[31,25]]
-  }
+    data: generateDateSeries(startDate, numberOfDays),
+  },
 ];
 
-  const optionEight = {
-    chart: {
-      parentHeightOffset: 0,
-      stacked: true,
-      type: 'line',
-      toolbar: { show: false }
+const optionEight = {
+  chart: {
+    parentHeightOffset: 0,
+    stacked: true,
+    type: 'line',
+    toolbar: { show: false },
+  },
+  grid: {
+    borderColor: 'rgba(72,94,144, 0.07)',
+    padding: {
+      top: -20,
+      left: 5,
+      bottom: -10,
     },
-    grid: {
-      borderColor: 'rgba(72,94,144, 0.07)',
-      padding: {
-        top: -20,
-        left: 5,
-        bottom: -15
-      }
+  },
+  states: {
+    hover: {
+      filter: { type: 'none' },
     },
-    states: {
-      hover: {
-        filter: { type: 'none' }
+    active: {
+      filter: { type: 'none' },
+    },
+  },
+  colors: ['#01a174', '#e5e9f2'],
+  plotOptions: {
+    bar: {
+      columnWidth: '40%',
+      endingShape: 'rounded',
+    },
+  },
+  stroke: {
+    curve: 'straight',
+    lineCap: 'square',
+    width: 0,
+  },
+  yaxis: {
+    min: 0,
+    max: 200000,
+    tickAmount: 5,
+  },
+  xaxis: {
+    type: 'datetime', // Specify that the x-axis represents dates
+    labels: {
+      style: {
+        colors: '#6e7985',
+        fontSize: '10px',
+        fontWeight: '500',
       },
-      active: {
-        filter: { type: 'none' }
-      }
-    },
-    colors: ['#01a174', '#e5e9f2'],
-    plotOptions: {
-      bar: {
-        columnWidth: '40%',
-        endingShape: 'rounded'
+      formatter: function (value, timestamp) {
+        const date = new Date(timestamp);
+        return date.getDate(); // Display only the day of the month
       },
     },
-    stroke: {
-      curve: 'straight',
-      lineCap: 'square',
-      width: 0
-    },
-    yaxis: {
-      min: 0,
-      max: 200000,
-      tickAmount: 5
-    },
-    xaxis: {
-      labels: {
-        style: {
-          colors: '#6e7985',
-          fontSize: '10px',
-          fontWeight: '500'
-        }
-      },
-    },
-    tooltip: { enabled: false },
-    legend: { show: false }
-  };
+    tickAmount: 30,
+  },
+  tooltip: { enabled: false },
+  legend: { show: false },
+};
 
   const optionDonut = {
     chart: {
